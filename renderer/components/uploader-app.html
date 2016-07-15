@@ -1,22 +1,30 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="./uploader-view1.html">
+<link rel="import" href="./uploader-view2.html">
+<link rel="import" href="./uploader-view3.html">
 
 <dom-module id="uploader-app">
 
   <template>
-
-      <div class="akasatana">
-          hamayawraw
-      </div>
 
     <app-location route="{{route}}"></app-location>
     <app-route
         route="{{route}}"
         pattern="/:page"
         data="{{routeData}}"
-        tail="{{subroute}}"
-    ></app-route>
+        tail="{{subroute}}"></app-route>
+
+      <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+        <uploader-view1 name="view1"></uploader-view1>
+        <uploader-view2 name="view2"></uploader-view2>
+        <uploader-view3 name="view3"></uploader-view3>
+      </iron-pages>
+
+  </template>
 
   </template>
 
@@ -28,8 +36,19 @@
         page: {
           type: String,
           reflectToAttribute: true,
+          observer: '_pageChanged'
         },
       },
+      observers: [
+        '_routePageChanged(routeData.page)'
+      ],
+      _routePageChanged: function(page) {
+        this.page = page || 'view1';
+      },
+      _pageChanged: function(page) {
+        // load page import on demand.
+        this.importHref(this.resolveUrl('uploader-' + page + '.html'), null, null, true);
+      }
     });
 
   </script>
