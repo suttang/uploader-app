@@ -1,0 +1,37 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
+
+<dom-module id="uploader-app">
+
+  <template>
+
+      <div class="akasatana">
+          hamayawraw
+      </div>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"
+    ></app-route>
+
+  </template>
+
+  <script>
+
+    Polymer({
+      is: 'uploader-app',
+      properties: {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+        },
+      },
+    });
+
+  </script>
+
+</dom-module>
