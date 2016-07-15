@@ -1,0 +1,23 @@
+{
+  "name": "uploader-app",
+  "version": "0.0.0",
+  "homepage": "https://github.com/suttang/uploader-app",
+  "authors": [
+    "suttang <suttang@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "app-route": "polymerelements/app-route#^0.9.1",
+    "polymer": "polymer/polymer#^1.4.0"
+  },
+  "devDependencies": {
+    "web-component-tester": "^4.0.0"
+  }
+}
