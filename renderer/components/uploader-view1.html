@@ -3,15 +3,25 @@
 <dom-module id="uploader-view1">
 
   <template>
+
+    <style>
+      :host {
+        display: block;
+        padding: 10px;
+      }
+      .upload-area {
+          width: 100%;
+          height: 300px;
+          border: 3px solid #ccc;
+      }
+    </style>
+
       <a name="view1" href="/view1">View One</a>
       <a name="view2" href="/view2">View Two</a>
       <a name="view3" href="/view3">View Three</a>
 
-    <div class="card">
-      <div class="circle">1</div>
-      <h1>View One</h1>
-      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.
-      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+    <div class="upload-area">
+        
     </div>
 
   </template>
@@ -19,7 +29,29 @@
   <script>
 
     Polymer({
-      is: 'uploader-view1'
+      is: 'uploader-view1',
+      listeners: {
+        dragenter: 'handleDragEnter',
+        dragover: 'handleDragOver',
+        dragleave: 'handleDragLeave',
+        drop: 'handleDrop',
+      },
+      handleDragEnter(event) {
+          event.preventDefault();
+          console.log("DRAG OVER");
+      },
+      handleDragOver(event) {
+          event.preventDefault();
+          console.log("DRAG OVER");
+      },
+      handleDragLeave(event) {
+          event.preventDefault();
+          console.log("DRAG LELAVE");
+      },
+      handleDrop(event) {
+          event.preventDefault();
+          console.log("DRAG DROP");
+      },
     });
 
   </script>
