@@ -1,48 +1,60 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>My App</title>
-  <meta name="theme-color" content="#fff">
-  <script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>My App</title>
+    <meta name="theme-color" content="#fff">
+    <script src="https://www.gstatic.com/firebasejs/3.2.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
+    <script>
+        // setup Polymer options
+        window.Polymer = { lazyRegister: true, dom: 'shadow' };
 
-    // setup Polymer options
-    window.Polymer = { lazyRegister: true, dom: 'shadow' };
+        // load webcomponents polyfills
+        (function() {
+            if ('registerElement' in document
+            && 'import' in document.createElement('link')
+            && 'content' in document.createElement('template')) {
+                // browser has web components
+            } else {
+                // polyfill web components
+                var e = document.createElement('script');
+                e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+                document.head.appendChild(e);
+            }
+        })();
 
-    // load webcomponents polyfills
-    (function() {
-      if ('registerElement' in document
-          && 'import' in document.createElement('link')
-          && 'content' in document.createElement('template')) {
-        // browser has web components
-      } else {
-        // polyfill web components
-        var e = document.createElement('script');
-        e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
-        document.head.appendChild(e);
-      }
-    })();
+        // load pre-caching service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                // navigator.serviceWorker.register('/service-worker.js');
+            });
+        }
 
-    // load pre-caching service worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        // navigator.serviceWorker.register('/service-worker.js');
-      });
-    }
-  </script>
-  <link rel="import" href="./components/uploader-app.html">
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyABjm-YjTBE6QbT1cP26mkck_NnDAGYNI8",
+            authDomain: "box-app-be028.firebaseapp.com",
+            databaseURL: "https://box-app-be028.firebaseio.com",
+            storageBucket: "box-app-be028.appspot.com",
+        };
+        firebase.initializeApp(config);
+    </script>
+    <link rel="import" href="./app.html">
 
 </head>
 <body>
 
-  <uploader-app></uploader-app>
+    <box-app></box-app>
 
-  <ul>
-      <li><a href="/view1">view1</a></li>
-      <li><a href="/view2">view2</a></li>
-      <li><a href="/view3">view3</a></li>
-  </ul>
+    <ul>
+        <li><a href="/login">login</a></li>
+        <li><a href="/uploader">view2</a></li>
+        <li><a href="/list">list</a></li>
+    </ul>
 
 
 

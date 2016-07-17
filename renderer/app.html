@@ -1,0 +1,50 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="./pages/login.html">
+<link rel="import" href="./pages/uploader.html">
+<link rel="import" href="./pages/list.html">
+
+<dom-module id="box-app">
+
+    <template>
+        <app-location route="{{route}}"></app-location>
+        <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+            <box-page-login name="login"></box-page-login>
+            <box-page-uploader name="uploader"></box-page-uploader>
+            <box-page-list name="list"></box-page-list>
+        </iron-pages>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'box-app',
+            properties: {
+                page: {
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: '_pageChanged'
+                },
+            },
+            observers: [
+                '_routePageChanged(routeData.page)'
+            ],
+            _routePageChanged: function(page) {
+                this.page = page || 'view1';
+            },
+            _pageChanged: function(page) {
+                // load page import on demand.
+                this.importHref(this.resolveUrl('pages/' + page + '.html'), null, null, true);
+            }
+        });
+    </script>
+
+</dom-module>

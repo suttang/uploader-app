@@ -3,7 +3,7 @@
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 
-<link rel="import" href="./uploader-view1.html">
+<link rel="import" href="./drop-area.html">
 <link rel="import" href="./uploader-view2.html">
 <link rel="import" href="./uploader-view3.html">
 
@@ -19,7 +19,7 @@
         tail="{{subroute}}"></app-route>
 
       <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-        <uploader-view1 name="view1"></uploader-view1>
+        <drop-area name="view1"></drop-area>
         <uploader-view2 name="view2"></uploader-view2>
         <uploader-view3 name="view3"></uploader-view3>
       </iron-pages>

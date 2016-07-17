@@ -1,0 +1,30 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="box-page-login">
+
+  <template>
+
+      <h1>this is login page</h1>
+      <form id="login" on-submit="submitHandler">
+          <p>email: <input type="email" name="email" id="email"></p>
+          <p>password: <input type="password" name="password" id="password"></p>
+          <input type="submit">
+      </form>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'box-page-login',
+      ready() {
+          console.log(this.$.email, this.$.password);
+      },
+      submitHandler(event) {
+          event.preventDefault();
+          console.log(firebase);
+          console.log('gehogheoge');
+      }
+    });
+
+  </script>
+
+</dom-module>
