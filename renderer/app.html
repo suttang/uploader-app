@@ -10,6 +10,17 @@
 <dom-module id="box-app">
 
     <template>
+      <style>
+        #loading {
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            color: #fff;
+        }
+        #loading.hidden {
+            display: none;
+        }
+      </style>
         <app-location route="{{route}}"></app-location>
         <app-route
             route="{{route}}"
@@ -23,15 +34,13 @@
             <box-page-list name="list"></box-page-list>
         </iron-pages>
 
+        <div id="loading">LOADING</div>
+
     </template>
 
     <script>
         const remote = require('electron').remote;
-        const fs = remote.require('fs');
         const defaultPage = 'login';
-      fs.exists('file:///data/works/workspace/uploader-app/renderer/pages/list.html', (isExists) => {
-        console.log('exists', isExists);
-      });
 
         Polymer({
             is: 'box-app',
@@ -43,9 +52,30 @@
                 },
             },
             ready() {
-                // check is logged in
+                this.$$('box-page-login').addEventListener('success', user => {
+                    this.page = 'uploader';
+                });
+                this.$$('box-page-login').addEventListener('failed', message => {
+
+                });
+
+                // check is logged in.
+                firebase.auth().onAuthStateChanged(user => {
+                    // hide loading screen
+                    this.$.loading.classList.add('hidden');
+                    if (user) {
+                        // User is signed in.
+                        this.page = 'uploader';
+                    } else {
+                        // No user is signed in.
+                        this.page = 'login';
+                    }
+                });
+
+                // // check is logged in
                 // if (! firebase.auth().currentUser) {
-                //     this.importHref(this.resolveUrl(`pages/${defaultPage}.html`), null, null, true);
+                //     console.log("NAIYO");
+                //     // this.importHref(this.resolveUrl(`pages/${defaultPage}.html`), null, null, true);
                 // } else {
                 //     console.log("ARUYO");
                 // //     this.importHref(this.resolveUrl('pages/login.html'), null, null, true);
@@ -58,11 +88,14 @@
                 this.page = page || defaultPage;
             },
             _pageChanged: function(page) {
-                this.importHref(this.resolveUrl(`pages/${page}.html`), null, () => {
-                    // fallback
-                    this.page = defaultPage;
-                    this.importHref(this.resolveUrl(`pages/login.html`), null, null, true);
-                }, true);
+                this.page = page;
+
+                // // load template dynamically
+                // this.importHref(this.resolveUrl(`pages/${page}.html`), null, () => {
+                //     // fallback
+                //     this.page = defaultPage;
+                //     this.importHref(this.resolveUrl(`pages/login.html`), null, null, true);
+                // }, true);
             }
         });
     </script>

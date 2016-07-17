@@ -25,12 +25,6 @@ function createWindow() {
     // when you should delete the corresponding element.
     win = null;
   });
-
-  var fs = require('fs');
-  fs.exists('file:///data/works/workspace/uploader-app/renderer/pages/list.html', (isExists) => {
-    console.log('exists', isExists);
-  });
-
 }
 
 // This method will be called when Electron has finished

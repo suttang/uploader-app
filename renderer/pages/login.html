@@ -30,8 +30,11 @@
           const email = this.$.email.value;
           const password = this.$.password.value;
           firebase.auth().signInWithEmailAndPassword(email, password).then(user => {
-              console.log(user);
+              console.log(this);
+              console.log("FIRED");
+              this.fire('success', user);
           }).catch(error => {
+              this.fire('failed', error.message)
               this.error = error.message;
           });
       }
