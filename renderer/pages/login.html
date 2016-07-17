@@ -3,8 +3,16 @@
 <dom-module id="box-page-login">
 
   <template>
+    <style>
+        .error {
+            color: #c00;
+        }
+    </style>
 
       <h1>this is login page</h1>
+      <div class="error">
+          {{error}}
+      </div>
       <form id="login" on-submit="submitHandler">
           <p>email: <input type="email" name="email" id="email"></p>
           <p>password: <input type="password" name="password" id="password"></p>
@@ -20,8 +28,18 @@
       },
       submitHandler(event) {
           event.preventDefault();
-          console.log(firebase);
-          console.log('gehogheoge');
+
+          const email = this.$.email.value;
+          const password = this.$.password.value;
+          firebase.auth().signInWithEmailAndPassword(email, password).then(user => {
+              console.log(user);
+          }).catch(error => {
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              console.log(errorCode);
+              console.log(errorMessage);
+              this.error = errorMessage;
+          });
       }
     });
 
