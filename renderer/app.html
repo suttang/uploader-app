@@ -12,19 +12,27 @@
     <template>
         <app-location route="{{route}}"></app-location>
         <app-route
-        route="{{route}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+            route="{{route}}"
+            pattern="/:page"
+            data="{{routeData}}"
+            tail="{{subroute}}"></app-route>
 
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
             <box-page-login name="login"></box-page-login>
             <box-page-uploader name="uploader"></box-page-uploader>
             <box-page-list name="list"></box-page-list>
         </iron-pages>
+
     </template>
 
     <script>
+        const remote = require('electron').remote;
+        const fs = remote.require('fs');
+        const defaultPage = 'login';
+      fs.exists('file:///data/works/workspace/uploader-app/renderer/pages/list.html', (isExists) => {
+        console.log('exists', isExists);
+      });
+
         Polymer({
             is: 'box-app',
             properties: {
@@ -34,15 +42,27 @@
                     observer: '_pageChanged'
                 },
             },
+            ready() {
+                // check is logged in
+                // if (! firebase.auth().currentUser) {
+                //     this.importHref(this.resolveUrl(`pages/${defaultPage}.html`), null, null, true);
+                // } else {
+                //     console.log("ARUYO");
+                // //     this.importHref(this.resolveUrl('pages/login.html'), null, null, true);
+                // }
+            },
             observers: [
                 '_routePageChanged(routeData.page)'
             ],
-            _routePageChanged: function(page) {
-                this.page = page || 'view1';
+            _routePageChanged(page) {
+                this.page = page || defaultPage;
             },
             _pageChanged: function(page) {
-                // load page import on demand.
-                this.importHref(this.resolveUrl('pages/' + page + '.html'), null, null, true);
+                this.importHref(this.resolveUrl(`pages/${page}.html`), null, () => {
+                    // fallback
+                    this.page = defaultPage;
+                    this.importHref(this.resolveUrl(`pages/login.html`), null, null, true);
+                }, true);
             }
         });
     </script>
