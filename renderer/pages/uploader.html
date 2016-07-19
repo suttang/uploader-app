@@ -1,23 +1,53 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../components/drop-area.html">
+
 
 <dom-module id="box-page-uploader">
 
   <template>
+    <style>
+        :host {
+            height: 100%;
+        }
+      #uploadArea {
+          width: 100%;
+          height: 100%;
+          background: #f3f3f3;
+      }
+      strong {
+          font-weight: 500;
+      }
+    </style>
 
-      <h1>this is uploader page</h1>
-
-      <ul>
-          <li><a href="/login">login</a></li>
-          <li><a href="/uploader">view2</a></li>
-          <li><a href="/list">list</a></li>
-      </ul>
+        <ul>
+            <template is="dom-repeat" items="{{files}}">
+                <li>hoge</li>
+            </template>
+        </ul>
+        <box-drop-area id="uploadArea"></box-drop-area>
 
   </template>
 
   <script>
 
     Polymer({
-      is: 'box-page-uploader'
+      is: 'box-page-uploader',
+      properties: {
+        files: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        }
+    },
+      ready() {
+        this.$.uploadArea.addEventListener('filedrop', this.handleFileDrop.bind(this));
+      },
+      handleFileDrop(event) {
+          for (let file of event.detail) {
+              this.push('files', file);
+          }
+      }
     });
 
   </script>
