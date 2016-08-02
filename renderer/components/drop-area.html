@@ -42,7 +42,21 @@
           console.log("DRAG LELAVE");
       },
       handleDrop(event) {
-          event.preventDefault();
+        event.preventDefault();
+        let index = 0;
+        for (let item of event.dataTransfer.items) {
+            let entry = item.webkitGetAsEntry();
+            console.log(item, event.dataTransfer.files[index]);
+            if (entry.isFile) {
+                console.log("file");
+            } else if (entry.isDirectory) {
+                console.log('directory');
+            } else {
+                console.log("AIUEO");
+            }
+            index++;
+          }
+        //   console.log(event.dataTransfer.items);
           this.fire('filedrop', event.dataTransfer.files);
       },
     });

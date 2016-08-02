@@ -6,32 +6,51 @@
 
   <template>
     <style>
-        :host {
-            height: 100%;
-        }
-      #uploadArea {
-          width: 100%;
-          height: 100%;
-          background: #f3f3f3;
+      :host {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: #f3f3f3;
       }
       strong {
           font-weight: 500;
       }
     </style>
 
+        <button on-click="compress">compress</button>
         <ul>
             <template is="dom-repeat" items="{{files}}">
-                <li>hoge</li>
+                <li>{{item.name}}</li>
             </template>
         </ul>
-        <box-drop-area id="uploadArea"></box-drop-area>
+        <p>
+          Drop <strong>folder</strong> or <strong>files</strong> here
+        </p>
+        <!-- <box-drop-area id="uploadArea"></box-drop-area> -->
 
   </template>
 
   <script>
 
+    const electron = require('electron');
+    const fs = electron.remote.require('fs');
+    const archiver = electron.remote.require('archiver');
+    const archive = archiver('zip');
+    const output = fs.createWriteStream('/Users/suttang/Desktop/archive_from_archiver.zip');
+    // output.on('close', function() {
+    //     console.log('archiver has been finalized and the output file descriptor has closed.');
+    // });
+    archive.pipe(output);
+
+
     Polymer({
       is: 'box-page-uploader',
+      listeners: {
+        dragenter: 'handleDragEnter',
+        dragover: 'handleDragOver',
+        dragleave: 'handleDragLeave',
+        drop: 'handleDrop',
+      },
       properties: {
         files: {
           type: Array,
@@ -39,14 +58,36 @@
             return [];
           }
         }
-    },
-      ready() {
-        this.$.uploadArea.addEventListener('filedrop', this.handleFileDrop.bind(this));
       },
-      handleFileDrop(event) {
-          for (let file of event.detail) {
-              this.push('files', file);
+      handleDragEnter(event) {
+          event.preventDefault();
+          console.log("DRAG OVER");
+      },
+      handleDragOver(event) {
+          event.preventDefault();
+          console.log("DRAG OVER");
+      },
+      handleDragLeave(event) {
+          event.preventDefault();
+          console.log("DRAG LELAVE");
+      },
+      handleDrop(event) {
+        event.preventDefault();
+        let index = 0;
+        for (let item of event.dataTransfer.items) {
+          let entry = item.webkitGetAsEntry();
+          let file = event.dataTransfer.files[index];
+          if (entry.isFile) {
+            archive.append(fs.createReadStream(file.path), { name: file.name });
+          } else if (entry.isDirectory) {
+            archive.directory(file.path, file.name, file);
           }
+          index++;
+        }
+      },
+      ready() {},
+      compress() {
+        archive.finalize();
       }
     });
 
