@@ -37,9 +37,35 @@
     const archiver = electron.remote.require('archiver');
     const archive = archiver('zip');
     const output = fs.createWriteStream('/Users/suttang/Desktop/archive_from_archiver.zip');
-    // output.on('close', function() {
-    //     console.log('archiver has been finalized and the output file descriptor has closed.');
-    // });
+
+    const spawn = electron.remote.require('child_process').spawn;
+
+
+
+    output.on('close', function() {
+      console.log(archive.pointer() + ' total bytes');
+      console.log('archiver has been finalized and the output file descriptor has closed.');
+    });
+
+    archive.on('entry', (event) => {
+      console.log(event.stats.size);
+    });
+    let inputBytes = 0;
+    let outputBytes = 0;
+    let isInputMode = true;
+    archive.on('data', (event) => {
+      if (isInputMode) {
+        inputBytes += event.length;
+      } else {
+        outputBytes += event.length;
+      }
+      // console.log(`${inputBytes} / ${outputBytes}`);
+    });
+
+    archive.on('error', function(err) {
+      throw err;
+    });
+
     archive.pipe(output);
 
 
@@ -77,6 +103,15 @@
         for (let item of event.dataTransfer.items) {
           let entry = item.webkitGetAsEntry();
           let file = event.dataTransfer.files[index];
+          console.log(file, entry);
+
+
+
+          let size = spawn('du', ['-sh', file.path]);
+          size.stdout.on('data', function (data) {
+            console.log('size: ' + data);
+          });
+
           if (entry.isFile) {
             archive.append(fs.createReadStream(file.path), { name: file.name });
           } else if (entry.isDirectory) {
@@ -87,7 +122,11 @@
       },
       ready() {},
       compress() {
+        isInputMode = false;
         archive.finalize();
+        setInterval(() => {
+          console.log(archive.pointer() + ' total bytes');
+        }, 100);
       }
     });
 
