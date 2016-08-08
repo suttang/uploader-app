@@ -1,0 +1,26 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="box-file-item">
+
+  <template>
+    <style>
+      .file-item {
+        border-bottom: 1px solid #ccc;
+      }
+    </style>
+    <div class="file-item">
+      <content></content>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'box-file-item',
+      ready() {
+        // console.log("AIUEODAYO");
+        // console.log(Polymer.dom(this).textContent);
+        // console.log(this.getContentChildren('.content'));
+      },
+    });
+  </script>
+</dom-module>

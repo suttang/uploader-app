@@ -1,5 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../components/drop-area.html">
+<link rel="import" href="../components/box-file-list.html">
+<link rel="import" href="../components/box-file-item.html">
 
 
 <dom-module id="box-page-uploader">
@@ -17,16 +19,16 @@
       }
     </style>
 
-        <button on-click="compress">compress</button>
-        <ul>
-            <template is="dom-repeat" items="{{files}}">
-                <li>{{item.name}}</li>
-            </template>
-        </ul>
-        <p>
-          Drop <strong>folder</strong> or <strong>files</strong> here
-        </p>
-        <!-- <box-drop-area id="uploadArea"></box-drop-area> -->
+    <button on-click="compress">compress</button>
+    <box-file-list>
+      <template is="dom-repeat" items="{{files}}">
+        <box-file-item>{{item.name}}</box-file-item>
+      </template>
+    </box-file-list>
+    <p>
+      Drop <strong>folder</strong> or <strong>files</strong> here
+    </p>
+    <!-- <box-drop-area id="uploadArea"></box-drop-area> -->
 
   </template>
 
@@ -105,8 +107,6 @@
           let file = event.dataTransfer.files[index];
           console.log(file, entry);
 
-
-
           let size = spawn('du', ['-sh', file.path]);
           size.stdout.on('data', function (data) {
             console.log('size: ' + data);
@@ -117,6 +117,9 @@
           } else if (entry.isDirectory) {
             archive.directory(file.path, file.name, file);
           }
+          this.push('files', {
+            name: file.name,
+          });
           index++;
         }
       },
