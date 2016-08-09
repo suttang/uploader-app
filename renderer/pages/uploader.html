@@ -22,7 +22,7 @@
     <button on-click="compress">compress</button>
     <box-file-list>
       <template is="dom-repeat" items="{{files}}">
-        <box-file-item>{{item.name}}</box-file-item>
+        <box-file-item name="{{item.name}}" size="{{item.size}}">{{item.name}}</box-file-item>
       </template>
     </box-file-list>
     <p>
@@ -119,6 +119,7 @@
           }
           this.push('files', {
             name: file.name,
+            size: '1200',
           });
           index++;
         }

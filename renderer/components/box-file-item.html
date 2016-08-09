@@ -5,10 +5,14 @@
   <template>
     <style>
       .file-item {
+        background: #fff;
+        padding: 15px 20px;
         border-bottom: 1px solid #ccc;
+        font-weight: 500;
       }
     </style>
     <div class="file-item">
+      {{name}} - {{size}}
       <content></content>
     </div>
   </template>
@@ -16,7 +20,12 @@
   <script>
     Polymer({
       is: 'box-file-item',
+      properties: {
+        name: String,
+        size: String,
+      },
       ready() {
+        console.log(this.name, this.size);
         // console.log("AIUEODAYO");
         // console.log(Polymer.dom(this).textContent);
         // console.log(this.getContentChildren('.content'));
