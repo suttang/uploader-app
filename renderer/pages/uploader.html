@@ -36,6 +36,8 @@
 
     const electron = require('electron');
     const fs = electron.remote.require('fs');
+    const FileReader = electron.remote.require('filereader');
+    const FileApi = electron.remote.require('file-api');
     const archiver = electron.remote.require('archiver');
     const archive = archiver('zip');
     const output = fs.createWriteStream('/Users/suttang/Desktop/archive_from_archiver.zip');
@@ -127,10 +129,48 @@
       ready() {},
       compress() {
         isInputMode = false;
-        archive.finalize();
-        setInterval(() => {
-          console.log(archive.pointer() + ' total bytes');
-        }, 100);
+        // archive.finalize();
+        //
+        const storageReference = firebase.storage().ref().child('archives');
+
+
+
+        // const File = FileApi.File;
+        // console.log(storageReference);
+        // console.log(FileApi);
+
+        // const fileReader = new FileReader();
+        // fileReader.addEventListener('load', function(event) {
+        //   // const blob = new File(event.target.result, 'temp.zip');
+        //   // const blob = new File([], 'temp.zip');
+        //   // console.log(blob);
+        //   // console.log("DONE");
+        //   // console.log(event.target.result);
+        //   // const blob = new Blob(event.target.result, {type: 'application/zip'});
+        //   storageReference.put(blob, {contentType: 'application/zip'}).then(response => {
+        //     console.log(response);
+        //   }).catch(error => {
+        //     cosole.log(error);
+        //   });
+        // });
+        // fileReader.readAsArrayBuffer(new File('/Users/suttang/Desktop/config.xml.zip'));
+
+        fs.readFile('/Users/suttang/Desktop/ss.png', function(error, data) {
+          if (error) {
+            return console.log(error);
+          }
+          const blob = new Blob([data], {});
+          storageReference.put(blob, {}).then(response => {
+            console.log(response);
+          }).catch(error => {
+            cosole.log(error);
+          });
+        });
+
+        // storageReference.put();
+        // setInterval(() => {
+        //   console.log(archive.pointer() + ' total bytes');
+        // }, 100);
       }
     });
 
