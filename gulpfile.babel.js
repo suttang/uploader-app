@@ -11,3 +11,6 @@ gulp.task('serve', () => {
   // Reload renderer process
   gulp.watch(['renderer/**/*.html'], electron.reload);
 });
+
+
+gulp.task('default', ['serve']);
