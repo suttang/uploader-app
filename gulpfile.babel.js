@@ -44,7 +44,7 @@ gulp.task('sass', (done) => {
 
 
 gulp.task('watch', ['sass', 'serve'], () => {
-  gulp.watch('./assets/scss/**/*.scss', ['scss', 'reload:browser']);
+  gulp.watch('./assets/scss/**/*.scss', ['sass', 'reload:renderer']);
 });
 
 
