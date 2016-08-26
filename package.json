@@ -31,5 +31,8 @@
     "presets": [
       "es2015"
     ]
+  },
+  "devDependencies": {
+    "electron-connect": "^0.4.6"
   }
 }
