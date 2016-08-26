@@ -18,6 +18,7 @@ function createWindow() {
     height: 300,
     // frame: false,
     titleBarStyle: 'hidden-inset',
+    backgroundColor: '#f3f3f3',
   });
 
 
