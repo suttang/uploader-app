@@ -6,28 +6,40 @@
     <style>
       :host {
         position: relative;
-        display: inline-block;
+        display: block;
         width: 100%;
         height: 100%;
-        background: -webkit-linear-gradient(top, #cbcbcb, #adadad);
-        border-radius: 4px;
         padding: 1px;
+        border-radius: 4px;
         -webkit-app-region: no-drag;
+        background: -webkit-linear-gradient(top, #cbcbcb, #adadad);
       }
-      .outline {
+      :host(:active) #outline {
+        background: -webkit-linear-gradient(top, #e5e5e5, #dbdbdb);
+      }
+      :host(:active) #highlight {
+        background: -webkit-linear-gradient(top, #ededed 0%, #e4e4e4 20%, #dbdbdb 100%);
+      }
+      #outline {
         position: relative;
-        display: inline-block;
-        box-sizing: border-box;
-        width: 100%;
-        height: 100%;
+        display: block;
+        border-radius: 2px;
+        background: -webkit-linear-gradient(top, #ffffff, #f1f1f1);
+      }
+      #highlight {
+        position: relative;
+        display: block;
+        padding: 1px;
         border-radius: 3px;
         background: -webkit-linear-gradient(top, #ffffff, #f1f1f1);
       }
-      .outline.first {
+      #container.first #outline,
+      #container.first #highlight {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
       }
-      .outline.last {
+      #container.last #outline,
+      #container.last #highlight {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
       }
@@ -60,8 +72,12 @@
       }*/
 
     </style>
-    <div class="outline" id="container">
-      <content></content>
+    <div id="container">
+      <div id="highlight">
+        <div id="outline">
+          <content></content>
+        </div>
+      </div>
     </div>
   </template>
 
