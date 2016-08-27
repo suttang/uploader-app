@@ -4,6 +4,7 @@
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 
 <link rel="import" href="./components/box-titlebar.html">
+<link rel="import" href="./components/box-content.html">
 <link rel="import" href="./components/ui/box-button.html">
 <link rel="import" href="./components/ui/box-button-group.html">
 <link rel="import" href="./pages/login.html">
@@ -27,6 +28,7 @@
             display: none;
         }
       </style>
+
         <box-titlebar>
           <box-button-group>
             <box-button>a</box-button>
@@ -34,20 +36,22 @@
           </box-button-group>
         </box-titlebar>
 
-        <app-location route="{{route}}"></app-location>
-        <app-route
-            route="{{route}}"
-            pattern="/:page"
-            data="{{routeData}}"
-            tail="{{subroute}}"></app-route>
+        <box-content>
+          <app-location route="{{route}}"></app-location>
+          <app-route
+              route="{{route}}"
+              pattern="/:page"
+              data="{{routeData}}"
+              tail="{{subroute}}"></app-route>
 
-        <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-            <box-page-login name="login"></box-page-login>
-            <box-page-uploader name="uploader"></box-page-uploader>
-            <box-page-list name="list"></box-page-list>
-        </iron-pages>
+          <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+              <box-page-login name="login"></box-page-login>
+              <box-page-uploader name="uploader"></box-page-uploader>
+              <box-page-list name="list"></box-page-list>
+          </iron-pages>
 
-        <div id="loading">起動中</div>
+          <div id="loading">起動中</div>
+        </box-content>
 
     </template>
 
