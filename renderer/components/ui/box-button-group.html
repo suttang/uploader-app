@@ -18,6 +18,15 @@
       .wrapper > ::content box-button:not(:first-child):not(:last-child) {
         border-radius: 0;
       }
+
+      /* border */
+      .wrapper > ::content box-button:first-child {
+        margin-left: 0px;
+      }
+      .wrapper > ::content box-button+box-button {
+        margin-left: -1px;
+      }
+      
     </style>
 
     <div class="wrapper">
