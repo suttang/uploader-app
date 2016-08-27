@@ -6,16 +6,20 @@
     <style>
       .wrapper {
         display: flex;
+        width: 200px;
       }
-      .wrapper > ::content box-button:first-child:not(:last-child) {
+      .wrapper > ::content box-button:first-child:not(:last-child),
+      .wrapper > ::content box-button:first-child:not(:last-child) .outline {
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
       }
-      .wrapper > ::content box-button:last-child:not(:first-child) {
+      .wrapper > ::content box-button:last-child:not(:first-child),
+      .wrapper > ::content box-button:last-child:not(:first-child) .outline {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
       }
-      .wrapper > ::content box-button:not(:first-child):not(:last-child) {
+      .wrapper > ::content box-button:not(:first-child):not(:last-child),
+      .wrapper > ::content box-button:not(:first-child):not(:last-child) .outline {
         border-radius: 0;
       }
 
@@ -26,7 +30,7 @@
       .wrapper > ::content box-button+box-button {
         margin-left: -1px;
       }
-      
+
     </style>
 
     <div class="wrapper">
@@ -38,7 +42,9 @@
     Polymer({
       is: 'box-button-group',
       ready() {
-
+        const children = this.children;
+        children[0].classList.add('first');
+        children[children.length - 1].classList.add('last');
       },
     });
   </script>
