@@ -3,6 +3,8 @@ const electron = require('electron');
 const {app} = electron;
 // Module to create native browser window.
 const {BrowserWindow} = electron;
+// Menu
+const {Menu} = electron;
 //
 const {client} = require('electron-connect');
 
@@ -73,3 +75,26 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+
+// Customize menu
+const template = [{
+  label: 'Edit',
+  submenu: [
+    { role: 'undo' },
+    { role: 'redo' },
+    { role: 'separator' },
+    { role: 'cut' },
+    { role: 'copy' },
+    { role: 'paste' },
+    { role: 'pasteandmatchstyle' },
+    { role: 'delete' },
+    { role: 'selectall' },
+  ],
+}];
+if (process.platform === 'darwin') {
+  const name = app.getName();
+  console.log(name);
+}
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);
