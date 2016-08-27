@@ -1,0 +1,32 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="box-titlebar">
+
+  <template>
+    <style>
+      :host {
+        display: block;
+        height: 34px;
+        background: -webkit-linear-gradient(top, #e5e5e5, #cfcfcf);
+        border-top: 1px solid #f4f4f4;
+        border-bottom: 1px solid #b0b0b0;
+        -webkit-user-select: none;
+        -webkit-app-region: drag;
+      }
+    </style>
+
+    <header>
+      <box-button-group>
+        <box-button>a</box-button>
+        <box-button>b</box-button>
+      </box-button-group>
+    </header>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'box-titlebar',
+      ready() {},
+    });
+  </script>
+</dom-module>

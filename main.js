@@ -16,9 +16,10 @@ function createWindow() {
   win = new BrowserWindow({
     width: 400,
     height: 300,
-    // frame: false,
     titleBarStyle: 'hidden-inset',
     backgroundColor: '#f3f3f3',
+    title: 'box',
+    show: true,
   });
 
 
@@ -37,6 +38,14 @@ function createWindow() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     win = null;
+  });
+
+  win.on('focus', () => {
+    console.log("ON FOCUS");
+  });
+
+  win.on('blur', () => {
+    console.log("ON BLUR");
   });
 }
 

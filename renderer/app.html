@@ -3,6 +3,9 @@
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 
+<link rel="import" href="./components/box-titlebar.html">
+<link rel="import" href="./components/ui/box-button.html">
+<link rel="import" href="./components/ui/box-button-group.html">
 <link rel="import" href="./pages/login.html">
 <link rel="import" href="./pages/uploader.html">
 <link rel="import" href="./pages/list.html">
@@ -24,6 +27,8 @@
             display: none;
         }
       </style>
+        <box-titlebar></box-titlebar>
+
         <app-location route="{{route}}"></app-location>
         <app-route
             route="{{route}}"

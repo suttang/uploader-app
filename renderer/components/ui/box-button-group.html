@@ -1,0 +1,36 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="box-button-group">
+
+  <template>
+    <style>
+      .wrapper {
+        display: flex;
+      }
+      .wrapper > ::content box-button:first-child:not(:last-child) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+      .wrapper > ::content box-button:last-child:not(:first-child) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+      .wrapper > ::content box-button:not(:first-child):not(:last-child) {
+        border-radius: 0;
+      }
+    </style>
+
+    <div class="wrapper">
+      <content></content>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'box-button-group',
+      ready() {
+
+      },
+    });
+  </script>
+</dom-module>
