@@ -7,9 +7,8 @@
 <link rel="import" href="./components/box-content.html">
 <link rel="import" href="./components/ui/box-button.html">
 <link rel="import" href="./components/ui/box-button-group.html">
-<link rel="import" href="./pages/login.html">
-<link rel="import" href="./pages/uploader.html">
-<link rel="import" href="./pages/list.html">
+<link rel="import" href="./pages/login/index.html">
+<link rel="import" href="./pages/upload/index.html">
 
 <dom-module id="box-app">
 
@@ -47,7 +46,6 @@
           <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
               <box-page-login name="login"></box-page-login>
               <box-page-uploader name="uploader"></box-page-uploader>
-              <box-page-list name="list"></box-page-list>
           </iron-pages>
 
           <div id="loading">起動中</div>
