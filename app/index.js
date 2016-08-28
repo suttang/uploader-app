@@ -4,7 +4,7 @@ const {app} = electron;
 // Module to create native browser window.
 const {BrowserWindow} = electron;
 // Menu
-const createMenu = require('./app/menu');
+const createMenu = require('./menu');
 const {Menu} = electron;
 //
 const {client} = require('electron-connect');

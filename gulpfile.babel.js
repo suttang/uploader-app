@@ -3,7 +3,9 @@ const sass = require('gulp-sass');
 const minifyCss = require('gulp-minify-css');
 const sourcemaps = require('gulp-sourcemaps');
 const rename = require('gulp-rename');
-const electron = require('electron-connect').server.create();
+const electron = require('electron-connect').server.create({
+  path: `${__dirname}/app`,
+});
 
 
 gulp.task('serve', () => {
@@ -11,10 +13,10 @@ gulp.task('serve', () => {
   electron.start();
 
   // Restart browser process
-  gulp.watch(['main.js', 'app/menu.js'], electron.restart);
+  gulp.watch(['app/index.js', 'app/menu.js'], electron.restart);
 
   // Reload renderer process
-  gulp.watch(['renderer/**/*.html'], electron.reload);
+  gulp.watch(['app/renderer/**/*.html'], electron.reload);
 });
 
 
@@ -30,21 +32,21 @@ gulp.task('reload:renderer', () => {
 
 
 gulp.task('sass', (done) => {
-  gulp.src('./assets/scss/**/*.scss')
+  gulp.src('./app/assets/scss/**/*.scss')
     .pipe(sourcemaps.init())
     .pipe(sass())
     .on('error', sass.logError)
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest('./assets/css/'))
+    .pipe(gulp.dest('./app/assets/css/'))
     .pipe(minifyCss({ keepSpecialComments: 0 }))
     .pipe(rename({ extname: '.min.css' }))
-    .pipe(gulp.dest('./assets/css/'))
+    .pipe(gulp.dest('./app/assets/css/'))
     .on('end', done);
 });
 
 
 gulp.task('watch', ['sass', 'serve'], () => {
-  gulp.watch('./assets/scss/**/*.scss', ['sass', 'reload:renderer']);
+  gulp.watch('./app/assets/scss/**/*.scss', ['sass', 'reload:renderer']);
 });
 
 
