@@ -4,6 +4,7 @@ const {app} = electron;
 // Module to create native browser window.
 const {BrowserWindow} = electron;
 // Menu
+const createMenu = require('./app/menu');
 const {Menu} = electron;
 //
 const {client} = require('electron-connect');
@@ -30,6 +31,10 @@ function createWindow() {
 
   // Open the DevTools.
   win.webContents.openDevTools();
+
+  const menu = Menu.buildFromTemplate(createMenu());
+  Menu.setApplicationMenu(menu);
+
 
   // Connect to server process
   client.create(win);
@@ -78,23 +83,34 @@ app.on('activate', () => {
 
 
 // Customize menu
-const template = [{
-  label: 'Edit',
-  submenu: [
-    { role: 'undo' },
-    { role: 'redo' },
-    { role: 'separator' },
-    { role: 'cut' },
-    { role: 'copy' },
-    { role: 'paste' },
-    { role: 'pasteandmatchstyle' },
-    { role: 'delete' },
-    { role: 'selectall' },
-  ],
-}];
-if (process.platform === 'darwin') {
-  const name = app.getName();
-  console.log(name);
-}
-const menu = Menu.buildFromTemplate(template);
-Menu.setApplicationMenu(menu);
+// const template = [{
+//   label: 'Edit',
+//   submenu: [
+//     { role: 'undo' },
+//     { role: 'redo' },
+//     { role: 'separator' },
+//     { role: 'cut' },
+//     { role: 'copy' },
+//     { role: 'paste' },
+//     { role: 'pasteandmatchstyle' },
+//     { role: 'delete' },
+//     { role: 'selectall' },
+//   ],
+// }];
+// if (process.platform === 'darwin') {
+//   const name = app.getName();
+//   template.unshift({
+//     label: name,
+//     submenu: [
+//       { role: 'about' },
+//       { type: 'separator' },
+//       { role: 'services',   submenu: [] },
+//       { type: 'separator' },
+//       { role: 'hide' },
+//       { role: 'hideothers' },
+//       { role: 'unhide' },
+//       { type: 'separator' },
+//       { role: 'quit' }
+//     ]
+//   });
+// }
