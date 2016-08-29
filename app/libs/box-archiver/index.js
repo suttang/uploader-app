@@ -99,3 +99,26 @@ module.exports = {
   BoxArchiver,
   BoxArchiveItem,
 };
+
+
+
+
+
+    // archive.on('entry', (event) => {
+    //   console.log(event.stats.size);
+    // });
+    // let inputBytes = 0;
+    // let outputBytes = 0;
+    // let isInputMode = true;
+    // archive.on('data', (event) => {
+    //   if (isInputMode) {
+    //     inputBytes += event.length;
+    //   } else {
+    //     outputBytes += event.length;
+    //   }
+    //   // console.log(`${inputBytes} / ${outputBytes}`);
+    // });
+    //
+    // archive.on('error', function(err) {
+    //   throw err;
+    // });
