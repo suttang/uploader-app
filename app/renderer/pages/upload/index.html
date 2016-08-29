@@ -24,19 +24,17 @@
         display: flex;
         flex-direction: row;
         flex: 1;
-        overflow: hidden;
         width: 100%;
         height: 100%;
+        overflow: hidden;
       }
       #column box-uploaded-list {
-        /*width: 20%;*/
-        /*overflow: hidden;*/
         flex: 0 0 12em;
         transition: margin 0.3s ease;
-        margin-left: 0;
+        margin-left: -12em;
       }
-      #column.hideUploadedList box-uploaded-list {
-        margin-left: -12em;\
+      #column.showUploadedList box-uploaded-list {
+        margin-left: 0;
       }
       #column box-file-list {
         flex: 1;
@@ -227,15 +225,11 @@
         //   console.log(archive.pointer() + ' total bytes');
         // }, 100);
       },
-      showUploadedList() {
-        // this.$.uploadedList.classList.remove('hide');
-        console.log("SHOW");
-        this.$.column.classList.remove('hideUploadedList');
-      },
       hideUploadedList() {
-        // this.$.uploadedList.classList.add('hide');
-        console.log("HIDE");
-        this.$.column.classList.add('hideUploadedList');
+        this.$.column.classList.remove('showUploadedList');
+      },
+      showUploadedList() {
+        this.$.column.classList.add('showUploadedList');
       }
     });
 
