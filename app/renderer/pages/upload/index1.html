@@ -80,10 +80,19 @@
     }
 
     const electron = require('electron');
+    const fs = electron.remote.require('fs');
+    const FileReader = electron.remote.require('filereader');
+    const FileApi = electron.remote.require('file-api');
+    const archiver = electron.remote.require('archiver');
+    const archive = archiver('zip');
+
+    const uploadFiles = [];
+
+
     const {BoxArchiver} = electron.remote.require('./libs/box-archiver');
     const {BoxArchiveItem} = electron.remote.require('./libs/box-archiver');
 
-    let archive = new BoxArchiver();
+    const arc = new BoxArchiver();
 
 
 
@@ -146,6 +155,7 @@
         for (let item of event.dataTransfer.items) {
           let entry = item.webkitGetAsEntry();
           let file = event.dataTransfer.files[index];
+
           let type;
           if (entry.isFile) {
             type = 'file';
@@ -154,33 +164,16 @@
           } else {
             continue;
           }
+          uploadFiles.push(new UploadFile(file.path, file.size, type, file.name, file));
 
-          this.pushFile(file, type);
-          // uploadFiles.push(new UploadFile(file.path, file.size, type, file.name, file));
-          //
-          // this.push('files', {
-          //   name: file.name,
-          //   size: file.size,
-          // });
+          this.push('files', {
+            name: file.name,
+            size: file.size,
+          });
           index++;
         }
       },
       ready() {},
-
-      /**
-       * [pushItem description]
-       * @param  {File} file
-       * @param  {string} type
-       * @return {number} length of files
-       */
-      pushFile(file, type) {
-        console.log(archive);
-        archive.add(file, type);
-        this.push('files', {
-          name: file.name,
-          size: file.size,
-        });
-      },
 
       compress() {
         const archive = archiver('zip');
