@@ -62,36 +62,12 @@
   </template>
 
   <script>
-
-    class UploadFile {
-      constructor(path, size, type, name, file) {
-        this.path = path;
-        this.size = size;
-        this.type = type;
-        this.name = name;
-        this.file = file;
-      }
-      get isFile() {
-        return this.type === 'file';
-      }
-      get isDirectory() {
-        return this.type === 'directory';
-      }
-    }
-
     const electron = require('electron');
     const {BoxArchiver} = electron.remote.require('./libs/box-archiver');
-    const {BoxArchiveItem} = electron.remote.require('./libs/box-archiver');
 
     let archive = new BoxArchiver();
 
 
-
-    // output.on('close', function() {
-    //   console.log(archive.pointer() + ' total bytes');
-    //   console.log('archiver has been finalized and the output file descriptor has closed.');
-    // });
-    //
     // archive.on('entry', (event) => {
     //   console.log(event.stats.size);
     // });
@@ -156,22 +132,21 @@
           }
 
           this.pushFile(file, type);
-          // uploadFiles.push(new UploadFile(file.path, file.size, type, file.name, file));
-          //
-          // this.push('files', {
-          //   name: file.name,
-          //   size: file.size,
-          // });
           index++;
         }
       },
-      ready() {},
+      handleArchiveComplete(archive) {
+        console.log(archive.pointer());
+      },
+      ready() {
+        archive.on('complete', this.handleArchiveComplete);
+      },
 
       /**
-       * [pushItem description]
+       * push file to file list
        * @param  {File} file
-       * @param  {string} type
-       * @return {number} length of files
+       * @param  {String} type
+       * @return {Number} length of files
        */
       pushFile(file, type) {
         console.log(archive);
@@ -182,24 +157,35 @@
         });
       },
 
-      compress() {
-        const archive = archiver('zip');
-        const output = fs.createWriteStream('/Users/suttang/Desktop/archive_from_archiver.zip');
-        archive.pipe(output);
-        for (let file of uploadFiles) {
-          if (file.isFile) {
-            archive.append(fs.createReadStream(file.path), { name: file.name });
-          } else {
-            archive.directory(file.path, file.name, file.file);
-          }
-        }
-        archive.finalize();
+      /**
+       * clear file list
+       */
+      clear() {
+        archive.clear();
+        this.splice('files', 0, this.files.length);
+      },
 
+      compress() {
+        // archive.
+        archive.create();
         return;
-        isInputMode = false;
-        archive.finalize();
+        // const archive = archiver('zip');
+        // const output = fs.createWriteStream('/Users/suttang/Desktop/archive_from_archiver.zip');
+        // archive.pipe(output);
+        // for (let file of uploadFiles) {
+        //   if (file.isFile) {
+        //     archive.append(fs.createReadStream(file.path), { name: file.name });
+        //   } else {
+        //     archive.directory(file.path, file.name, file.file);
+        //   }
+        // }
+        // archive.finalize();
         //
-        const storageReference = firebase.storage().ref().child('archives');
+        // return;
+        // isInputMode = false;
+        // archive.finalize();
+        // //
+        // const storageReference = firebase.storage().ref().child('archives');
 
 
 

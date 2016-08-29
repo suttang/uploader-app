@@ -1,17 +1,44 @@
 const fs = require('fs');
+const {EventEmitter} = require('events');
 const archiver = require('archiver');
-const archive = archiver('zip');
 
-class BoxArchiver {
+const archiveType = 'zip';
+const archiveFilePath = '/Users/suttang/Desktop/archive_from_archiver.zip';
+
+class BoxArchiver extends EventEmitter {
   constructor() {
+    super();
     this.files = [];
-    console.log('archiver');
   }
 
   add(file, type) {
     const item = new BoxArchiveItem(file, type);
-    console.log(item.path, item.size, item.name, item.type, item.isFile, item.isDirectory);
+    // console.log(item.path, item.size, item.name, item.type, item.isFile, item.isDirectory);
     this.files.push(item);
+  }
+
+  clear() {
+    this.files = [];
+  }
+
+  create() {
+    const archive = archiver(archiveType);
+    const output = fs.createWriteStream(archiveFilePath);
+    output.on('close', () => {
+      this.emit('complete', archive);
+    });
+
+    archive.pipe(output);
+    for (let file of this.files) {
+      if (file.isFile) {
+        archive.append(fs.createReadStream(file.path), { name: file.name });
+      } else if (file.isDirectory) {
+        archive.directory(file.path, file.name, file.file);
+      } else {
+        continue;
+      }
+    }
+    archive.finalize();
   }
 }
 
