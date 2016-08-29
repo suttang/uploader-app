@@ -30,8 +30,8 @@
 
         <box-titlebar>
           <box-button-group>
-            <box-button>a</box-button>
-            <box-button>b</box-button>
+            <box-button on-click="showUploadedList">a</box-button>
+            <box-button on-click="hideUploadedList">b</box-button>
           </box-button-group>
         </box-titlebar>
 
@@ -45,7 +45,7 @@
 
           <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
               <box-page-login name="login"></box-page-login>
-              <box-page-uploader name="uploader"></box-page-uploader>
+              <box-page-uploader id="uploader" name="uploader"></box-page-uploader>
           </iron-pages>
 
           <div id="loading">起動中</div>
@@ -110,7 +110,13 @@
                 //     this.page = defaultPage;
                 //     this.importHref(this.resolveUrl(`pages/login.html`), null, null, true);
                 // }, true);
-            }
+            },
+            showUploadedList() {
+              this.$.uploader.showUploadedList();
+            },
+            hideUploadedList() {
+              this.$.uploader.hideUploadedList();
+            },
         });
     </script>
 
