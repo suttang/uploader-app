@@ -4,8 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron app"
   },
   "repository": {
     "type": "git",
@@ -24,7 +23,8 @@
     "babel-preset-react": "^6.11.1",
     "babel-register": "^6.9.0",
     "file-api": "^0.10.4",
-    "filereader": "^0.10.3"
+    "filereader": "^0.10.3",
+    "moment": "^2.14.1"
   },
   "babel": {
     "sourceMaps": "inline",
@@ -41,8 +41,5 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-useref": "^3.1.0",
     "minimist": "^1.2.0"
-  },
-  "scripts": {
-    "start": "electron app"
   }
 }

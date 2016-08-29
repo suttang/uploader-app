@@ -40,6 +40,21 @@ class BoxArchiver extends EventEmitter {
     }
     archive.finalize();
   }
+
+  /**
+   * load archived binary
+   * @return {Promise}
+   */
+  load() {
+    return new Promise((resolve, reject) => {
+      fs.readFile(archiveFilePath, (error, data) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve(data);
+      });
+    });
+  }
 }
 
 
