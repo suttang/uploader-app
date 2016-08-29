@@ -140,7 +140,7 @@
         archive.once('complete', () => {
           archive.load().then(data => {
             const blob = new Blob([data], {});
-            const storage = firebase.storage().ref().child('archives');
+            const storage = firebase.storage().ref().child(archive.filename);
             return storage.put(blob, {});
           }).then(response => {
             console.log(response);

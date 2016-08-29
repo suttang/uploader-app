@@ -1,19 +1,26 @@
+const os = require('os');
 const fs = require('fs');
 const {EventEmitter} = require('events');
 const archiver = require('archiver');
+const moment = require('moment');
+const {app} = require('electron');
+
+const Promise = require('bluebird');
+const mkdir = Promise.promisify(fs.mkdir);
+const stat = Promise.promisify(fs.stat);
 
 const archiveType = 'zip';
-const archiveFilePath = '/Users/suttang/Desktop/archive_from_archiver.zip';
+const archiveBaseFilePath = `${os.tmpdir()}/${app.getName()}`;
 
 class BoxArchiver extends EventEmitter {
   constructor() {
     super();
     this.files = [];
+    this.filepath = `${archiveBaseFilePath}/${this.filename}`;
   }
 
   add(file, type) {
     const item = new BoxArchiveItem(file, type);
-    // console.log(item.path, item.size, item.name, item.type, item.isFile, item.isDirectory);
     this.files.push(item);
   }
 
@@ -22,23 +29,36 @@ class BoxArchiver extends EventEmitter {
   }
 
   create() {
-    const archive = archiver(archiveType);
-    const output = fs.createWriteStream(archiveFilePath);
-    output.on('close', () => {
-      this.emit('complete', archive);
-    });
-
-    archive.pipe(output);
-    for (let file of this.files) {
-      if (file.isFile) {
-        archive.append(fs.createReadStream(file.path), { name: file.name });
-      } else if (file.isDirectory) {
-        archive.directory(file.path, file.name, file.file);
-      } else {
-        continue;
+    stat(archiveBaseFilePath)
+    // ディレクトリが存在するかどうか確認・なかったら作成
+    .catch(error => {
+      if (error.code == 'ENOENT') {
+        return mkdir(archiveBaseFilePath);
       }
-    }
-    archive.finalize();
+      return Promise.resolve();
+    })
+    // アーカイブ作成
+    .then(() => {
+      const archive = archiver(archiveType);
+      const output = fs.createWriteStream(this.filepath);
+      output.on('close', () => {
+        this.emit('complete', archive);
+      });
+
+      archive.pipe(output);
+      for (let file of this.files) {
+        if (file.isFile) {
+          archive.append(fs.createReadStream(file.path), { name: file.name });
+        } else if (file.isDirectory) {
+          archive.directory(file.path, file.name, file.file);
+        } else {
+          continue;
+        }
+      }
+      archive.finalize();
+    }).catch(error => {
+      console.log(error);
+    });
   }
 
   /**
@@ -47,13 +67,20 @@ class BoxArchiver extends EventEmitter {
    */
   load() {
     return new Promise((resolve, reject) => {
-      fs.readFile(archiveFilePath, (error, data) => {
+      fs.readFile(this.filepath, (error, data) => {
         if (error) {
           return reject(error);
         }
         return resolve(data);
       });
     });
+  }
+
+  /**
+   *
+   */
+  get filename() {
+    return moment().format('YYYY-MM-DD_HH-mm-ss.SSS') + '.zip';
   }
 }
 
