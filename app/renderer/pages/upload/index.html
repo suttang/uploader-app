@@ -114,7 +114,6 @@
       handleArchiveComplete(archive) {
         console.log(archive.pointer());
       },
-      ready() {},
       /**
        * push file to file list
        * @param  {File} file
@@ -143,11 +142,26 @@
             const storage = firebase.storage().ref().child(archive.filename);
             return storage.put(blob, {});
           }).then(response => {
-            console.log(response);
+            // constract database data
+            const files = [];
+            for (let file of archive.files) {
+              files.push({
+                name: file.name,
+                size: file.size,
+                type: file.type,
+              });
+            }
+            // save database
+            const uuid = firebase.auth().currentUser.uid;
+            return firebase.database().ref(`uploads/${uuid}`).push({
+              files: files,
+              created_at: Date.now(),
+            });
+          }).then(response => {
+            console.log("FILE UPLOAD COMPLETE");
           }).catch(error => {
             console.log(error);
           });
-          console.log("ARCHIVE CREATED");
         });
         archive.create();
       },

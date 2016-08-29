@@ -75,15 +75,15 @@
                 });
                 // check is logged in.
                 firebase.auth().onAuthStateChanged(user => {
-                    // hide loading screen
-                    this.$.loading.classList.add('hidden');
-                    if (user) {
-                        // User is signed in.
-                        this.page = 'uploader';
-                    } else {
-                        // No user is signed in.
-                        this.page = 'login';
-                    }
+                  // hide loading screen
+                  this.$.loading.classList.add('hidden');
+                  if (user) {
+                    // User is signed in.
+                    this.page = 'uploader';
+                  } else {
+                    // No user is signed in.
+                    this.page = 'login';
+                  }
                 });
 
                 // // check is logged in
