@@ -50,14 +50,12 @@
       <box-file-list>
         <button on-click="compress">compress</button>
         <template is="dom-repeat" items="{{files}}">
-          <box-file-item name="{{item.name}}" size="{{item.size}}">{{item.name}}</box-file-item>
+          <box-file-item name="{{item.name}}" size="{{item.size}}"></box-file-item>
         </template>
         <p>
           Drop <strong>folder</strong> or <strong>files</strong> here
         </p>
       </box-file-list>
-
-    <!-- <box-drop-area id="uploadArea"></box-drop-area> -->
 
   </template>
 
@@ -98,6 +96,7 @@
         for (let item of event.dataTransfer.items) {
           let entry = item.webkitGetAsEntry();
           let file = event.dataTransfer.files[index];
+          console.log(entry, file);
           let type;
           if (entry.isFile) {
             type = 'file';

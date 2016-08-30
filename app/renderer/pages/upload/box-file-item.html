@@ -3,31 +3,50 @@
   <template>
     <style>
       .file-item {
+        display: flex;
         background: #fff;
         padding: 15px 20px;
         border-bottom: 1px solid #ccc;
         font-weight: 500;
+        font-size: 12px;
+      }
+      .file-item img {
+        object-fit: contain;
+        width: 50px;
+        height: 50px;
+      }
+      .file-item .properties {
+        line-height: 50px;
+      }
+      .file-item .properties .filename {
+        font-weight: 600;
       }
     </style>
     <div class="file-item">
-      {{name}} - {{size}}
-      <content></content>
+      <img src="../assets/images/icons/{{icon}}">
+      <div class="properties">
+        <span class="filename">{{name}}</span> - {{size}}
+      </div>
     </div>
   </template>
 
   <script>
-    Polymer({
-      is: 'box-file-item',
-      properties: {
-        name: String,
-        size: String,
-      },
-      ready() {
-        console.log(this.name, this.size);
-        // console.log("AIUEODAYO");
-        // console.log(Polymer.dom(this).textContent);
-        // console.log(this.getContentChildren('.content'));
-      },
-    });
+    (() => {
+
+      const electron = require('electron');
+      const findIcon = electron.remote.require('./libs/icon-finder');
+      Polymer({
+        is: 'box-file-item',
+        properties: {
+          icon: String,
+          name: String,
+          size: String,
+        },
+        ready() {
+          this.icon = findIcon(this.name);
+        },
+      });
+
+    })();
   </script>
 </dom-module>

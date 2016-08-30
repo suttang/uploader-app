@@ -52,7 +52,7 @@
           uploadsRef.on('value', (snapshot) => {
             this.refresh(snapshot.val());
           });
-        }, 1000);
+        }, 2000);
       },
       refresh(entries) {
         console.log("ON REFRESH");
