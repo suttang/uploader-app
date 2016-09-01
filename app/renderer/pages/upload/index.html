@@ -38,21 +38,23 @@
       #column.showUploadedList box-uploaded-list {
         margin-left: 0;
       }
-      #column box-file-list {
+      #column #file-list-container {
         flex: 1;
         overflow-x: hidden;
         overflow-y: scroll;
       }
     </style>
 
-    <p>
-      Drop <strong>folder</strong> or <strong>files</strong> here
-    </p>
-    <button on-click="compress">compress</button>
 
     <div id="column">
       <box-uploaded-list id="uploadedList"></box-uploaded-list>
-      <box-file-list id="fileList"></box-file-list>
+      <div id="file-list-container">
+        <p>
+          Drop <strong>folder</strong> or <strong>files</strong> here
+        </p>
+        <button on-click="compress">compress</button>
+        <box-file-list id="fileList"></box-file-list>
+      </div>
     </div>
 
 
