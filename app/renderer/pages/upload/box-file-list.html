@@ -31,20 +31,28 @@
           for (let i = 0; i < length; i++) {
             const item = dataTransfer.items[i];
             const file = dataTransfer.files[i];
-
             const fileType = getFileType(item.webkitGetAsEntry());
+
+            // ファイルがnullの場合は追加しない (.weblockとか謎の挙動)
+            if (! file) {
+              continue;
+            }
 
             // ファイルタイプが謎の場合は追加しない
             if (! fileType) {
               continue;
             }
 
+            console.log(item);
+            console.log(file);
+            console.log(item.webkitGetAsEntry());
+
             // 同じ名前が既に登録されている場合は追加しない
             const hasAdded = this.items.filter((item) => item.path == file.path).length > 0;
             if (hasAdded) {
               continue;
             }
-            
+
             this.push('items', {
               file: file,
               type: fileType,
@@ -67,6 +75,9 @@
       });
 
       function getFileType(entry) {
+        if (! entry) {
+          return false;
+        }
         if (entry.isFile) {
           return 'file';
         }
