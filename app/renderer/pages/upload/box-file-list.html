@@ -43,10 +43,6 @@
               continue;
             }
 
-            console.log(item);
-            console.log(file);
-            console.log(item.webkitGetAsEntry());
-
             // 同じ名前が既に登録されている場合は追加しない
             const hasAdded = this.items.filter((item) => item.path == file.path).length > 0;
             if (hasAdded) {
