@@ -25,6 +25,7 @@
     "bluebird": "^3.4.3",
     "file-api": "^0.10.4",
     "filereader": "^0.10.3",
+    "filesize": "^3.3.0",
     "moment": "^2.14.1"
   },
   "babel": {

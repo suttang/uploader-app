@@ -27,6 +27,10 @@
       .file-item .properties .filename {
         font-weight: 600;
       }
+      .file-item .properties .filesize {
+        font-size: 10px;
+        color: #999;
+      }
       .file-item .delete {
         height: 40px;
       }
@@ -47,7 +51,7 @@
     <div class="file-item">
       <img src="../assets/images/icons/{{icon}}">
       <div class="properties">
-        <span class="filename">{{name}}</span> - {{size}}
+        <span class="filename">{{name}}</span><span class="filesize"> - {{size}}</span>
       </div>
       <div class="delete" on-click="handleDelete">
         <img src="../../../assets/images/icon-delete.png">
@@ -60,6 +64,7 @@
 
       const electron = require('electron');
       const findIcon = electron.remote.require('./libs/icon-finder');
+      const filesize = electron.remote.require('filesize');
       Polymer({
         is: 'box-file-item',
         properties: {
@@ -67,8 +72,9 @@
           name: String,
           size: String,
         },
-        ready() {
+        attached() {
           this.icon = findIcon(this.name);
+          this.size = filesize(this.size);
         },
         handleDelete() {
           this.fire('delete', { name: this.name });
