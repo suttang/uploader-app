@@ -1,21 +1,65 @@
+<link rel="import" href="./box-file-item.html">
+
 <dom-module id="box-file-list">
 
   <template>
     <style>
     </style>
     <div class="file-list">
+      <template is="dom-repeat" items="{{files}}">
+        <box-file-item name="{{item.name}}" size="{{item.size}}" on-hogehoge="deleteItem"></box-file-item>
+      </template>
       <content></content>
     </div>
   </template>
 
   <script>
-    Polymer({
-      is: 'box-file-list',
-      ready() {
-        // console.log("AIUEODAYO");
-        // console.log(Polymer.dom(this).textContent);
-        // console.log(this.getContentChildren('.content'));
-      },
-    });
+    (() => {
+
+      Polymer({
+        is: 'box-file-list',
+        properties: {
+          items: {
+            type: Array,
+            value: function() {
+              return [];
+            }
+          }
+        },
+        addItemsFromDataTransfer(dataTransfer) {
+          const length = dataTransfer.items.length;
+          for (let i = 0; i < length; i++) {
+            const item = dataTransfer.items[i];
+            const file = dataTransfer.files[i];
+
+            const fileType = getFileType(item.webkitGetAsEntry());
+            if (! fileType) {
+              continue;
+            }
+
+            this.push('items', {
+              file: file,
+              type: fileType,
+              name: file.name,
+              size: file.size,
+            });
+          }
+        },
+        deleteItem() {
+          console.log("DELETE ITEM");
+        }
+      });
+
+      function getFileType(entry) {
+        if (entry.isFile) {
+          return 'file';
+        }
+        if (entry.isDirectory) {
+          return 'directory';
+        }
+        return false;
+      }
+
+    })();
   </script>
 </dom-module>

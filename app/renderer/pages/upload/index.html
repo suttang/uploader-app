@@ -47,7 +47,7 @@
 
     <div id="column">
       <box-uploaded-list id="uploadedList"></box-uploaded-list>
-      <box-file-list>
+      <box-file-list id="fileList" items="{{files}}">
         <button on-click="compress">compress</button>
         <template is="dom-repeat" items="{{files}}">
           <box-file-item name="{{item.name}}" size="{{item.size}}"></box-file-item>
@@ -92,39 +92,10 @@
       },
       handleDrop(event) {
         event.preventDefault();
-        let index = 0;
-        for (let item of event.dataTransfer.items) {
-          let entry = item.webkitGetAsEntry();
-          let file = event.dataTransfer.files[index];
-          console.log(entry, file);
-          let type;
-          if (entry.isFile) {
-            type = 'file';
-          } else if (entry.isDirectory) {
-            type = 'directory';
-          } else {
-            continue;
-          }
-
-          this.pushFile(file, type);
-          index++;
-        }
+        this.$.fileList.addItemsFromDataTransfer(event.dataTransfer);
       },
       handleArchiveComplete(archive) {
         console.log(archive.pointer());
-      },
-      /**
-       * push file to file list
-       * @param  {File} file
-       * @param  {String} type
-       * @return {Number} length of files
-       */
-      pushFile(file, type) {
-        archive.add(file, type);
-        this.push('files', {
-          name: file.name,
-          size: file.size,
-        });
       },
       /**
        * clear file list
@@ -135,6 +106,13 @@
       },
 
       compress() {
+        // Collect file entries
+        const items = this.$.fileList.items;
+        for (let item of items) {
+          archive.add(item.file, item.type);
+        }
+
+        // Archive
         archive.once('complete', () => {
           archive.load().then(data => {
             const blob = new Blob([data], {});

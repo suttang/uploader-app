@@ -9,23 +9,48 @@
         border-bottom: 1px solid #ccc;
         font-weight: 500;
         font-size: 12px;
+        justify-content: space-between;
       }
       .file-item img {
         object-fit: contain;
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
       }
       .file-item .properties {
-        line-height: 50px;
+        width: 100%;
+        height: 40px;
+        padding-left: 10px;
+        line-height: 40px;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
       .file-item .properties .filename {
         font-weight: 600;
+      }
+      .file-item .delete {
+        height: 40px;
+      }
+      .file-item .delete img {
+        object-fit: contain;
+        width: calc(40px / 2);
+        height: calc(40px / 2);
+        margin-top: calc((40px - (40px / 2)) / 2 - 2px);
+        opacity: 0.25;
+      }
+      .file-item .delete img:hover {
+        opacity: 0.5;
+      }
+      .file-item .delete img:active {
+        opacity: 0.7;
       }
     </style>
     <div class="file-item">
       <img src="../assets/images/icons/{{icon}}">
       <div class="properties">
         <span class="filename">{{name}}</span> - {{size}}
+      </div>
+      <div class="delete" on-click="handleDelete">
+        <img src="../../../assets/images/icon-delete.png">
       </div>
     </div>
   </template>
@@ -44,6 +69,9 @@
         },
         ready() {
           this.icon = findIcon(this.name);
+        },
+        handleDelete() {
+          this.fire('hogehoge');
         },
       });
 
