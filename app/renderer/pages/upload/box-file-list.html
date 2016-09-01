@@ -33,13 +33,22 @@
             const file = dataTransfer.files[i];
 
             const fileType = getFileType(item.webkitGetAsEntry());
+
+            // ファイルタイプが謎の場合は追加しない
             if (! fileType) {
               continue;
             }
 
+            // 同じ名前が既に登録されている場合は追加しない
+            const hasAdded = this.items.filter((item) => item.path == file.path).length > 0;
+            if (hasAdded) {
+              continue;
+            }
+            
             this.push('items', {
               file: file,
               type: fileType,
+              path: file.path,
               name: file.name,
               size: file.size,
             });
