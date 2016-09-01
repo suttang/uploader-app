@@ -6,8 +6,8 @@
     <style>
     </style>
     <div class="file-list">
-      <template is="dom-repeat" items="{{files}}">
-        <box-file-item name="{{item.name}}" size="{{item.size}}" on-hogehoge="deleteItem"></box-file-item>
+      <template is="dom-repeat" items="{{items}}">
+        <box-file-item name="{{item.name}}" size="{{item.size}}" on-delete="handleDeleteItem"></box-file-item>
       </template>
       <content></content>
     </div>
@@ -45,8 +45,15 @@
             });
           }
         },
-        deleteItem() {
-          console.log("DELETE ITEM");
+        handleDeleteItem(event, data) {
+          let index, item;
+          for (index in this.items) {
+            item = this.items[index];
+            if (item.name === data.name) {
+              break;
+            }
+          }
+          this.splice('items', index, 1);
         }
       });
 

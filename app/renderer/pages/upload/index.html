@@ -45,17 +45,16 @@
       }
     </style>
 
+    <p>
+      Drop <strong>folder</strong> or <strong>files</strong> here
+    </p>
+    <button on-click="compress">compress</button>
+
     <div id="column">
       <box-uploaded-list id="uploadedList"></box-uploaded-list>
-      <box-file-list id="fileList" items="{{files}}">
-        <button on-click="compress">compress</button>
-        <template is="dom-repeat" items="{{files}}">
-          <box-file-item name="{{item.name}}" size="{{item.size}}"></box-file-item>
-        </template>
-        <p>
-          Drop <strong>folder</strong> or <strong>files</strong> here
-        </p>
-      </box-file-list>
+      <box-file-list id="fileList"></box-file-list>
+    </div>
+
 
   </template>
 
@@ -73,14 +72,7 @@
         dragleave: 'handleDragLeave',
         drop: 'handleDrop',
       },
-      properties: {
-        files: {
-          type: Array,
-          value: function() {
-            return [];
-          }
-        }
-      },
+      properties: {},
       handleDragEnter(event) {
           event.preventDefault();
       },
@@ -102,7 +94,7 @@
        */
       clear() {
         archive.clear();
-        this.splice('files', 0, this.files.length);
+        // this.splice('files', 0, this.files.length);
       },
 
       compress() {

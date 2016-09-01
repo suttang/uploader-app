@@ -71,7 +71,7 @@
           this.icon = findIcon(this.name);
         },
         handleDelete() {
-          this.fire('hogehoge');
+          this.fire('delete', { name: this.name });
         },
       });
 
