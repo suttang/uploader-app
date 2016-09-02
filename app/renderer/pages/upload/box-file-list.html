@@ -4,10 +4,22 @@
 
   <template>
     <style>
+/*
+      :host {
+        --box-file-item-bg-color: lightgrey;
+        --box-file-item-bg-color-odd: red;
+      }
+*/
+      box-file-item:nth-child(odd) {
+        background: #ebebeb;
+      }
+      box-file-item:nth-child(even) {
+        background: #f5f5f5;
+      }
     </style>
     <div class="file-list">
       <template is="dom-repeat" items="{{items}}">
-        <box-file-item name="{{item.name}}" size="{{item.size}}" on-delete="handleDeleteItem"></box-file-item>
+        <box-file-item name="{{item.name}}" size="{{item.size}}" on-delete="handleDeleteItem" order="{{index}}"></box-file-item>
       </template>
       <content></content>
     </div>

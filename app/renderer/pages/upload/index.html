@@ -39,9 +39,25 @@
         margin-left: 0;
       }
       #column #file-list-container {
+        position: relative;
         flex: 1;
         overflow-x: hidden;
         overflow-y: scroll;
+        padding-bottom: 80px;
+      }
+      #column #file-list-controller {
+        position: fixed;
+        bottom: 0px;
+        left: 0px;
+        z-index: 1000;
+        width: calc(100% - 1px);
+        height: 80px;
+        margin-left: 1px;
+        background: #fff;
+        transition: margin 0.3s ease;
+      }
+      #column.showUploadedList #file-list-controller {
+        margin-left: calc(18em + 1px);
       }
     </style>
 
@@ -49,11 +65,13 @@
     <div id="column">
       <box-uploaded-list id="uploadedList"></box-uploaded-list>
       <div id="file-list-container">
-        <p>
-          Drop <strong>folder</strong> or <strong>files</strong> here
-        </p>
-        <button on-click="compress">compress</button>
         <box-file-list id="fileList"></box-file-list>
+        <div id="file-list-controller">
+          <button on-click="compress">compress</button>
+          <p>
+            Drop <strong>folder</strong> or <strong>files</strong> here
+          </p>
+        </div>
       </div>
     </div>
 

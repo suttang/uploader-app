@@ -2,11 +2,13 @@
 
   <template>
     <style>
+      :host {
+        display: block;
+        background: var(--box-file-item-bg-color, #fff);
+        padding: 15px 20px;
+      }
       .file-item {
         display: flex;
-        background: #fff;
-        padding: 15px 20px;
-        border-bottom: 1px solid #ccc;
         font-weight: 500;
         font-size: 12px;
         justify-content: space-between;
@@ -25,7 +27,8 @@
         overflow: hidden;
       }
       .file-item .properties .filename {
-        font-weight: 600;
+        font-weight: 500;
+        color: #111
       }
       .file-item .properties .filesize {
         font-size: 10px;

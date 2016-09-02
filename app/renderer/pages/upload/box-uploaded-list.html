@@ -16,53 +16,94 @@
       }
       ul {
         margin: 0;
-        padding: 10px;
+        padding: 0;
         list-style: none;
       }
       ul > li {
+        padding: 0px 10px;
         font-size: 12px;
+        line-height: 24px;
+      }
+      ul > li.active {
+        background: #c8c8c8;
       }
     </style>
 
+    <h1>UPLOADS</h1>
     <ul>
-      <h1>UPLOADS</h1>
       <template is="dom-repeat" items="{{uploads}}">
-        <li>{{item.name}}</li>
+        <li class="item" on-click="itemClicked" on-contextmenu="openContextMenu">{{item.name}}</li>
       </template>
     </ul>
 
   </template>
 
   <script>
+    (() => {
 
-    Polymer({
-      is: 'box-uploaded-list',
-      properties: {
-        uploads: {
-          type: Array,
-          value: function() {
-            return [];
+      const electron = require('electron');
+      const Menu = electron.remote.Menu;
+      const menu = Menu.buildFromTemplate([{
+        label: 'Inspect Element',
+        click: () => {
+          console.log("HOGEHOGE");
+        },
+      }]);
+
+      // const menuItem = new Menuitem({
+      //   label: 'Inspect Element',
+      //   click: () => {
+      //     console.log("HOGEHOGE");
+      //   },
+      // });
+
+      Polymer({
+        is: 'box-uploaded-list',
+        properties: {
+          uploads: {
+            type: Array,
+            value: function() {
+              return [];
+            }
           }
+        },
+        ready() {
+          setTimeout(() => {
+            const uuid = firebase.auth().currentUser.uid;
+            const uploadsRef = firebase.database().ref(`uploads/${uuid}`);
+            uploadsRef.on('value', (snapshot) => {
+              this.refresh(snapshot.val());
+            });
+          }, 2000);
+          // context menu
+          // this.listen(Polymer.this.root.querySelectorAll('li'), 'contextmenu', 'openContextMenu');
+          // this.addEventListener('contextmenu', () => {
+          //   console.log("HOGEHOGE");
+          // });
+        },
+        refresh(entries) {
+          console.log("ON REFRESH");
+          for (let key in entries) {
+            let entry = entries[key];
+            this.push('uploads', entry);
+          }
+        },
+        clearSelect() {
+          for (let element of this.root.querySelectorAll('li')) {
+            Polymer.dom(element).classList.remove('active');
+          }
+        },
+        itemClicked(event) {
+          this.clearSelect();
+          event.target.classList.add('active');
+        },
+        openContextMenu(event) {
+          event.preventDefault();
+          menu.popup(electron.remote.getCurrentWindow());
         }
-      },
-      ready() {
-        setTimeout(() => {
-          const uuid = firebase.auth().currentUser.uid;
-          const uploadsRef = firebase.database().ref(`uploads/${uuid}`);
-          uploadsRef.on('value', (snapshot) => {
-            this.refresh(snapshot.val());
-          });
-        }, 2000);
-      },
-      refresh(entries) {
-        console.log("ON REFRESH");
-        for (let key in entries) {
-          let entry = entries[key];
-          this.push('uploads', entry);
-        }
-      },
-    });
+      });
 
+    })();
   </script>
 
 </dom-module>
