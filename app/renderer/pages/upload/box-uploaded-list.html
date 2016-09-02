@@ -31,8 +31,8 @@
 
     <h1>UPLOADS</h1>
     <ul>
-      <template is="dom-repeat" items="{{uploads}}">
-        <li class="item" on-click="itemClicked" on-contextmenu="openContextMenu">{{item.name}}</li>
+      <template is="dom-repeat" items="{{items}}">
+        <li class="item" on-click="itemClicked" on-contextmenu="openContextMenu" id="{{item.key}}" data-name="{{item.name}}">{{item.name}}</li>
       </template>
     </ul>
 
@@ -43,29 +43,50 @@
 
       const electron = require('electron');
       const Menu = electron.remote.Menu;
-      const menu = Menu.buildFromTemplate([{
-        label: 'Inspect Element',
-        click: () => {
-          console.log("HOGEHOGE");
-        },
-      }]);
+      const menu = Menu.buildFromTemplate([
+        {
+          label: 'Copy download URL',
+          click: (item) => {
+            console.log(contextMenuTargetItem);
+          },
+        }, {
+          type: 'separator'
+        }, {
+          label: 'Delete',
+          click: (item) => {
+            const entryKey = contextMenuTargetItem.id;
+            const entryName = contextMenuTargetItem.dataName;
+            const storage = firebase.storage().ref().child(archive.filename);
+            const uuid = firebase.auth().currentUser.uid;
+            const databaseRef = firebase.database().ref(`uploads/${uuid}/${entryKey}`);
+            const storageRef = firebase.storage().ref().child(entryName);
 
-      // const menuItem = new Menuitem({
-      //   label: 'Inspect Element',
-      //   click: () => {
-      //     console.log("HOGEHOGE");
-      //   },
-      // });
+            console.info(`[STORAGE DELETE]: ${entryName}...`);
+            storageRef.delete().then(() => {
+              console.info('[STORAGE DELETE]: complete');
+              console.info(`[DATABASE DELETE]: ${entryKey}...`);
+              return databaseRef.remove();
+            }).then(() => {
+              console.info('[DATABASE DELETE]: complete');
+            }).catch((error) => {
+              alert(`ERROR\n${error}`);
+            });
+
+          },
+        },
+      ]);
+
+      let contextMenuTargetItem = null;
 
       Polymer({
         is: 'box-uploaded-list',
         properties: {
-          uploads: {
+          items: {
             type: Array,
             value: function() {
               return [];
             }
-          }
+          },
         },
         ready() {
           setTimeout(() => {
@@ -75,17 +96,15 @@
               this.refresh(snapshot.val());
             });
           }, 2000);
-          // context menu
-          // this.listen(Polymer.this.root.querySelectorAll('li'), 'contextmenu', 'openContextMenu');
-          // this.addEventListener('contextmenu', () => {
-          //   console.log("HOGEHOGE");
-          // });
         },
         refresh(entries) {
-          console.log("ON REFRESH");
+          // empty
+          this.splice('items', 0, this.items.length);
+          // add
           for (let key in entries) {
             let entry = entries[key];
-            this.push('uploads', entry);
+            entry.key = key;
+            this.push('items', entry);
           }
         },
         clearSelect() {
@@ -95,12 +114,13 @@
         },
         itemClicked(event) {
           this.clearSelect();
-          event.target.classList.add('active');
+          Polymer.dom(event.target).classList.add('active');
         },
         openContextMenu(event) {
           event.preventDefault();
+          contextMenuTargetItem = event.target;
           menu.popup(electron.remote.getCurrentWindow());
-        }
+        },
       });
 
     })();

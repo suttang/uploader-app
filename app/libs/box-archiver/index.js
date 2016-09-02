@@ -16,7 +16,9 @@ class BoxArchiver extends EventEmitter {
   constructor() {
     super();
     this.files = [];
-    this.filepath = `${archiveBaseFilePath}/${this.filename}`;
+    this.baseFilepath = `${archiveBaseFilePath}`;
+    this.filename = '';
+    this.filepath = '';
   }
 
   add(file, type) {
@@ -29,6 +31,9 @@ class BoxArchiver extends EventEmitter {
   }
 
   create() {
+    this.filename = moment().format('YYYY-MM-DD_HH-mm-ss.SSS') + '.zip';
+    this.filepath = `${this.baseFilepath}/${this.filename}`;
+
     stat(archiveBaseFilePath)
     // ディレクトリが存在するかどうか確認・なかったら作成
     .catch(error => {
@@ -74,13 +79,6 @@ class BoxArchiver extends EventEmitter {
         return resolve(data);
       });
     });
-  }
-
-  /**
-   *
-   */
-  get filename() {
-    return moment().format('YYYY-MM-DD_HH-mm-ss.SSS') + '.zip';
   }
 }
 
