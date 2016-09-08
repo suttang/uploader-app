@@ -32,6 +32,7 @@
           <box-button-group>
             <box-button on-click="showUploadedList">show</box-button>
             <box-button on-click="hideUploadedList">hide</box-button>
+            <box-button on-click="uploadFiles">upload</box-button>
           </box-button-group>
         </box-titlebar>
 
@@ -117,6 +118,9 @@
             hideUploadedList() {
               this.$.uploader.hideUploadedList();
             },
+            uploadFiles() {
+              console.log("HOGE");
+            }
         });
     </script>
 

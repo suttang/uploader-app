@@ -4,12 +4,16 @@
 
   <template>
     <style>
-/*
       :host {
-        --box-file-item-bg-color: lightgrey;
-        --box-file-item-bg-color-odd: red;
+        width: 100%;
+        height: 100%;
+        overflow-y: scroll;
+        /*--box-file-item-bg-color: lightgrey;*/
+        /*--box-file-item-bg-color-odd: red;*/
       }
-*/
+      #message.hidden {
+        display: none;
+      }
       box-file-item:nth-child(odd) {
         background: #ebebeb;
       }
@@ -18,6 +22,9 @@
       }
     </style>
     <div class="file-list">
+      <div id="message">
+        drag and drop then upload files
+      </div>
       <template is="dom-repeat" items="{{items}}">
         <box-file-item name="{{item.name}}" size="{{item.size}}" on-delete="handleDeleteItem" order="{{index}}"></box-file-item>
       </template>
@@ -68,6 +75,8 @@
               name: file.name,
               size: file.size,
             });
+            // ドロップしてねメッセージの削除
+            Polymer.dom(this.$.message).classList.add('hidden');
           }
         },
         handleDeleteItem(event, data) {
@@ -79,6 +88,11 @@
             }
           }
           this.splice('items', index, 1);
+
+          // ドロップしてねメッセージの復活
+          if (this.items.length <= 0) {
+            Polymer.dom(this.$.message).classList.remove('hidden');
+          }
         }
       });
 
