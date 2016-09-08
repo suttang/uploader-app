@@ -124,12 +124,18 @@
           archive.add(item.file, item.type);
         }
 
+        const progressHandler = (event) => {
+          console.log(event.bytesTransferred / event.totalBytes * 100);
+        }
+
         // Archive
         archive.once('complete', () => {
           archive.load().then(data => {
             const blob = new Blob([data], {});
             const storage = firebase.storage().ref().child(archive.filename);
-            return storage.put(blob, {});
+            const upload = storage.put(blob, {});
+            upload.on('state_changed', progressHandler);
+            return upload;
           }).then(response => {
             // constract database data
             const files = [];
