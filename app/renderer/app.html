@@ -28,29 +28,29 @@
         }
       </style>
 
-        <box-titlebar>
-          <box-button-group>
-            <box-button on-click="showUploadedList">show</box-button>
-            <box-button on-click="hideUploadedList">hide</box-button>
-            <box-button on-click="uploadFiles">upload</box-button>
-          </box-button-group>
-        </box-titlebar>
+      <box-titlebar>
+        <box-button-group>
+          <box-button on-click="showUploadedList">show</box-button>
+          <box-button on-click="hideUploadedList">hide</box-button>
+          <box-button on-click="uploadFiles">upload</box-button>
+        </box-button-group>
+      </box-titlebar>
 
-        <box-content>
-          <app-location route="{{route}}"></app-location>
-          <app-route
-              route="{{route}}"
-              pattern="/:page"
-              data="{{routeData}}"
-              tail="{{subroute}}"></app-route>
+      <box-content>
+        <app-location route="{{route}}"></app-location>
+        <app-route
+          route="{{route}}"
+          pattern="/:page"
+          data="{{routeData}}"
+          tail="{{subroute}}"></app-route>
 
-          <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-              <box-page-login name="login"></box-page-login>
-              <box-page-uploader id="uploader" name="uploader"></box-page-uploader>
-          </iron-pages>
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+          <box-page-login name="login"></box-page-login>
+          <box-page-uploader id="uploader" name="uploader"></box-page-uploader>
+        </iron-pages>
 
-          <div id="loading">起動中</div>
-        </box-content>
+        <div id="loading">起動中</div>
+      </box-content>
 
     </template>
 
@@ -119,7 +119,7 @@
               this.$.uploader.hideUploadedList();
             },
             uploadFiles() {
-              console.log("HOGE");
+              this.$.uploader.compress();
             }
         });
     </script>
