@@ -158,9 +158,11 @@
       },
       hideUploadedList() {
         this.$.column.classList.remove('showUploadedList');
+        this.$.uploadedList.close();
       },
       showUploadedList() {
         this.$.column.classList.add('showUploadedList');
+        this.$.uploadedList.open();
       }
     });
 

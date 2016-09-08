@@ -77,10 +77,15 @@
       ]);
 
       let contextMenuTargetItem = null;
+      let keyDownHandler = null;
+      // 選択の起点となるアイテム
+      let clickedItem = null;
+      const selectedItems = [];
 
       Polymer({
         is: 'box-uploaded-list',
         properties: {
+          isOpened: Boolean,
           items: {
             type: Array,
             value: function() {
@@ -111,16 +116,46 @@
           for (let element of this.root.querySelectorAll('li')) {
             Polymer.dom(element).classList.remove('active');
           }
+          clickedItem = null;
+          selectedItems.splice(0, selectedItems.length);
         },
         itemClicked(event) {
           this.clearSelect();
           Polymer.dom(event.target).classList.add('active');
+          clickedItem = event.target;
+          selectedItems.push(event.target);
         },
         openContextMenu(event) {
           event.preventDefault();
           contextMenuTargetItem = event.target;
           menu.popup(electron.remote.getCurrentWindow());
         },
+        open() {
+          this.isOpened = true;
+          keyDownHandler = this.keydown.bind(this);
+          window.addEventListener('keydown', keyDownHandler);
+        },
+        close() {
+          this.isOpened = false;
+          window.removeEventListener('keydown', keyDownHandler);
+          keyDownHandler = null;
+        },
+        keydown(event) {
+          switch (event.key) {
+            case 'ArrowUp':
+              this.prevItem(event.shiftKey);
+              break;
+            case 'ArrowDown':
+              this.nextItem(event.shiftKey);
+              break;
+          }
+        },
+        nextItem(isContinuousSelect = false) {
+          console.log('netItm');
+        },
+        prevItem(isContinuousSelect = false) {
+          console.log('prevItem')
+        }
       });
 
     })();
