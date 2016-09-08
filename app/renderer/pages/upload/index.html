@@ -125,7 +125,7 @@
         }
 
         const progressHandler = (event) => {
-          console.log(event.bytesTransferred / event.totalBytes * 100);
+          console.log(`${event.bytesTransferred / event.totalBytes * 100}%%`);
         }
 
         // Archive
