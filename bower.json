@@ -16,7 +16,8 @@
   "dependencies": {
     "app-route": "polymerelements/app-route#^0.9.1",
     "iron-pages": "polymerelements/iron-pages#^1.0.0",
-    "polymer": "polymer/polymer#^1.4.0"
+    "polymer": "polymer/polymer#^1.4.0",
+    "iron-localstorage": "PolymerElements/iron-localstorage#~1.0.6"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
