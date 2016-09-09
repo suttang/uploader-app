@@ -30,6 +30,11 @@
     </style>
 
     <h1>UPLOADS</h1>
+    <select multiple>
+      <template is="dom-repeat" items="{{items}}">
+        <option value="saab" id="{{item.key}}" data-name="{{item.name}}">{{item.name}}</option>
+      </template>
+    </select>
     <ul>
       <template is="dom-repeat" items="{{items}}">
         <li class="item" on-click="itemClicked" on-contextmenu="openContextMenu" id="{{item.key}}" data-name="{{item.name}}">{{item.name}}</li>
@@ -79,8 +84,11 @@
       let contextMenuTargetItem = null;
       let keyDownHandler = null;
       // 選択の起点となるアイテム
-      let clickedItem = null;
-      const selectedItems = [];
+      const selection = {
+        items: [],
+        clickedItem: null,
+        targetItem: null,
+      };
 
       Polymer({
         is: 'box-uploaded-list',
@@ -116,14 +124,17 @@
           for (let element of this.root.querySelectorAll('li')) {
             Polymer.dom(element).classList.remove('active');
           }
-          clickedItem = null;
-          selectedItems.splice(0, selectedItems.length);
+          // selection.clickedItem = null;
+          selection.items.splice(0, selection.items.length);
         },
         itemClicked(event) {
-          this.clearSelect();
-          Polymer.dom(event.target).classList.add('active');
-          clickedItem = event.target;
-          selectedItems.push(event.target);
+          selection.clickedItem = event.target;
+          selection.targetItem = event.target;
+          this.select(event.target);
+          // this.clearSelect();
+          // Polymer.dom(event.target).classList.add('active');
+          // clickedItem = event.target;
+          // selection.items.push(event.target);
         },
         openContextMenu(event) {
           event.preventDefault();
@@ -141,20 +152,60 @@
           keyDownHandler = null;
         },
         keydown(event) {
+          event.preventDefault();
           switch (event.key) {
             case 'ArrowUp':
-              this.prevItem(event.shiftKey);
+              this.selectPrevItem(event.shiftKey);
               break;
             case 'ArrowDown':
-              this.nextItem(event.shiftKey);
+              this.selectNextItem(event.shiftKey);
               break;
           }
         },
-        nextItem(isContinuousSelect = false) {
-          console.log('netItm');
+        selectNextItem(isContinuousSelect = false) {
+          const items = this.root.querySelectorAll('li');
+          // querySelectorAll の返り値は NodeList で、 indexOf が使用できない
+          const clickedItemIndex = Array.prototype.indexOf.call(items, selection.targetItem);
+          const targetItem = items[clickedItemIndex + 1];
+          // 選択予定のアイテムが存在しない場合は何もしない
+          if (! targetItem) {
+            return;
+          }
+
+          // カーソルを保持
+          selection.targetItem = targetItem;
+          // カーソルアイテムを選択
+          this.select(targetItem, isContinuousSelect);
+          // 連続的選択ではない場合は clickedItem を上書き
+          if (! isContinuousSelect) {
+            selection.clickedItem = targetItem;
+          }
         },
-        prevItem(isContinuousSelect = false) {
-          console.log('prevItem')
+        selectPrevItem(isContinuousSelect = false) {
+          const items = this.root.querySelectorAll('li');
+          // querySelectorAll の返り値は NodeList で、 indexOf が使用できない
+          const clickedItemIndex = Array.prototype.indexOf.call(items, selection.targetItem);
+          const targetItem = items[clickedItemIndex - 1];
+          // 選択予定のアイテムが存在しない場合は何もしない
+          if (! targetItem) {
+            return;
+          }
+
+          // カーソルを保持
+          selection.targetItem = targetItem;
+          // カーソルアイテムを選択
+          this.select(targetItem, isContinuousSelect);
+          // 連続的選択ではない場合は clickedItem を上書き
+          if (! isContinuousSelect) {
+            selection.clickedItem = targetItem;
+          }
+        },
+        select(item, isContinuousSelect = false) {
+          if (! isContinuousSelect) {
+            this.clearSelect();
+          }
+          Polymer.dom(item).classList.add('active');
+          selection.items.push(item);
         }
       });
 
