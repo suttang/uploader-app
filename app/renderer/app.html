@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/app-route/app-location.html">
 <link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/iron-localstorage/iron-localstorage.html">
 
 <link rel="import" href="./components/box-titlebar.html">
 <link rel="import" href="./components/box-content.html">
@@ -12,7 +13,11 @@
 
 <dom-module id="box-app">
 
+
     <template>
+
+      <iron-localstorage name="box:auth:user" id="store" value="{{user}}" on-iron-localstorage-load-empty="initializeDefaultUser"></iron-localstorage>
+
       <style>
         :host, iron-pages {
             height: 100%;
@@ -29,6 +34,7 @@
       </style>
 
       <box-titlebar>
+        <p>Name: <input value="{{user.displayName::change}}" placeholder="Enter words"></p>
         <box-button-group>
           <box-button on-click="showUploadedList">show</box-button>
           <box-button on-click="hideUploadedList">hide</box-button>
@@ -61,11 +67,19 @@
         Polymer({
             is: 'box-app',
             properties: {
-                page: {
-                    type: String,
-                    reflectToAttribute: true,
-                    observer: '_pageChanged'
-                },
+              page: {
+                type: String,
+                reflectToAttribute: true,
+                observer: '_pageChanged'
+              },
+              user: Object,
+            },
+            initializeDefaultUser() {
+              this.user = {
+                uid: '',
+                email: '',
+                displayName: '',
+              };
             },
             ready() {
                 this.$$('box-page-login').addEventListener('success', user => {
@@ -81,6 +95,12 @@
                   if (user) {
                     // User is signed in.
                     this.page = 'uploader';
+
+                    this.set('user', {
+                      uid: user.uid,
+                      email: user.email,
+                      displayName: user.displayName,
+                    });
                   } else {
                     // No user is signed in.
                     this.page = 'login';
