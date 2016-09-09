@@ -131,6 +131,7 @@
         },
         selectChange() {
           selectedItems = Polymer.dom(this.root).querySelectorAll('option.item:checked');
+          this.fire('select-change', selectedItems);
         },
       });
 

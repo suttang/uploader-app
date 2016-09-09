@@ -56,18 +56,8 @@
 
 
     <div id="column">
-      <box-uploaded-list id="uploadedList"></box-uploaded-list>
+      <box-uploaded-list id="uploadedList" on-select-change="uploadedSelectChanged"></box-uploaded-list>
       <box-file-list id="fileList"></box-file-list>
-<!--
-      <div id="file-list-container">
-        <div id="file-list-controller">
-          <button on-click="compress">compress</button>
-          <p>
-            Drop <strong>folder</strong> or <strong>files</strong> here
-          </p>
-        </div>
-      </div>
--->
     </div>
 
 
@@ -163,6 +153,9 @@
       showUploadedList() {
         this.$.column.classList.add('showUploadedList');
         this.$.uploadedList.open();
+      },
+      uploadedSelectChanged(event, items) {
+        console.log(items);
       }
     });
 
