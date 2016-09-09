@@ -14,38 +14,38 @@
         font-size: 9px;
         font-weight: 500;
       }
-      ul {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+      #listContainer {
+        width: 100%;
+        border: 0px;
+        outline: 0px;
+        background: none;
+        overflow: visible;
+        -webkit-appearance: none;
       }
-      ul > li {
-        padding: 0px 10px;
+      #listContainer option {
+        width: 100%;
+        padding: 10px 10px;
         font-size: 12px;
-        line-height: 24px;
       }
-      ul > li.active {
-        background: #c8c8c8;
+      #listContainer option.context {
+        font-weight: bold;
       }
     </style>
 
     <h1>UPLOADS</h1>
-    <select multiple>
-      <template is="dom-repeat" items="{{items}}">
-        <option value="saab" id="{{item.key}}" data-name="{{item.name}}">{{item.name}}</option>
-      </template>
-    </select>
-    <ul>
-      <template is="dom-repeat" items="{{items}}">
-        <li class="item" on-click="itemClicked" on-contextmenu="openContextMenu" id="{{item.key}}" data-name="{{item.name}}">{{item.name}}</li>
-      </template>
-    </ul>
-
+    <form id="selectedItems">
+      <select multiple id="listContainer" on-change="selectChange">
+        <template is="dom-repeat" items="{{items}}">
+          <option class="item" value="{{item.key}}" id="{{item.key}}" data-name="{{item.name}}" on-contextmenu="openContextMenu">{{item.name}}</option>
+        </template>
+      </select>
+    </form>
   </template>
+
 
   <script>
     (() => {
-
+      // <li class="item" on-click="itemClicked" on-contextmenu="openContextMenu" id="{{item.key}}" data-name="{{item.name}}">{{item.name}}</li>
       const electron = require('electron');
       const Menu = electron.remote.Menu;
       const menu = Menu.buildFromTemplate([
@@ -59,36 +59,31 @@
         }, {
           label: 'Delete',
           click: (item) => {
-            const entryKey = contextMenuTargetItem.id;
-            const entryName = contextMenuTargetItem.dataName;
-            const storage = firebase.storage().ref().child(archive.filename);
             const uuid = firebase.auth().currentUser.uid;
-            const databaseRef = firebase.database().ref(`uploads/${uuid}/${entryKey}`);
-            const storageRef = firebase.storage().ref().child(entryName);
+            for (let item of selectedItems) {
+              const entryKey = item.id;
+              const entryName = item.dataName;
+              const databaseRef = firebase.database().ref(`uploads/${uuid}/${entryKey}`);
+              const storageRef = firebase.storage().ref().child(entryName);
 
-            console.info(`[STORAGE DELETE]: ${entryName}...`);
-            storageRef.delete().then(() => {
-              console.info('[STORAGE DELETE]: complete');
-              console.info(`[DATABASE DELETE]: ${entryKey}...`);
-              return databaseRef.remove();
-            }).then(() => {
-              console.info('[DATABASE DELETE]: complete');
-            }).catch((error) => {
-              alert(`ERROR\n${error}`);
-            });
-
+              console.info(`[STORAGE DELETE]: ${entryName}...`);
+              storageRef.delete().then(() => {
+                console.info('[STORAGE DELETE]: complete');
+                console.info(`[DATABASE DELETE]: ${entryKey}...`);
+                return databaseRef.remove();
+              }).then(() => {
+                console.info('[DATABASE DELETE]: complete');
+              }).catch((error) => {
+                alert(`ERROR\n${error}`);
+              });
+            }
           },
         },
       ]);
 
       let contextMenuTargetItem = null;
-      let keyDownHandler = null;
-      // 選択の起点となるアイテム
-      const selection = {
-        items: [],
-        clickedItem: null,
-        targetItem: null,
-      };
+      // 選択済みのアイテム
+      let selectedItems = [];
 
       Polymer({
         is: 'box-uploaded-list',
@@ -120,93 +115,23 @@
             this.push('items', entry);
           }
         },
-        clearSelect() {
-          for (let element of this.root.querySelectorAll('li')) {
-            Polymer.dom(element).classList.remove('active');
-          }
-          // selection.clickedItem = null;
-          selection.items.splice(0, selection.items.length);
-        },
-        itemClicked(event) {
-          selection.clickedItem = event.target;
-          selection.targetItem = event.target;
-          this.select(event.target);
-          // this.clearSelect();
-          // Polymer.dom(event.target).classList.add('active');
-          // clickedItem = event.target;
-          // selection.items.push(event.target);
-        },
         openContextMenu(event) {
           event.preventDefault();
           contextMenuTargetItem = event.target;
+          // contextMenuTargetItem.classList.add('context');
+          // setTimeout(() => {
           menu.popup(electron.remote.getCurrentWindow());
+          // }, 5);
         },
         open() {
           this.isOpened = true;
-          keyDownHandler = this.keydown.bind(this);
-          window.addEventListener('keydown', keyDownHandler);
         },
         close() {
           this.isOpened = false;
-          window.removeEventListener('keydown', keyDownHandler);
-          keyDownHandler = null;
         },
-        keydown(event) {
-          event.preventDefault();
-          switch (event.key) {
-            case 'ArrowUp':
-              this.selectPrevItem(event.shiftKey);
-              break;
-            case 'ArrowDown':
-              this.selectNextItem(event.shiftKey);
-              break;
-          }
+        selectChange() {
+          selectedItems = Polymer.dom(this.root).querySelectorAll('option.item:checked');
         },
-        selectNextItem(isContinuousSelect = false) {
-          const items = this.root.querySelectorAll('li');
-          // querySelectorAll の返り値は NodeList で、 indexOf が使用できない
-          const clickedItemIndex = Array.prototype.indexOf.call(items, selection.targetItem);
-          const targetItem = items[clickedItemIndex + 1];
-          // 選択予定のアイテムが存在しない場合は何もしない
-          if (! targetItem) {
-            return;
-          }
-
-          // カーソルを保持
-          selection.targetItem = targetItem;
-          // カーソルアイテムを選択
-          this.select(targetItem, isContinuousSelect);
-          // 連続的選択ではない場合は clickedItem を上書き
-          if (! isContinuousSelect) {
-            selection.clickedItem = targetItem;
-          }
-        },
-        selectPrevItem(isContinuousSelect = false) {
-          const items = this.root.querySelectorAll('li');
-          // querySelectorAll の返り値は NodeList で、 indexOf が使用できない
-          const clickedItemIndex = Array.prototype.indexOf.call(items, selection.targetItem);
-          const targetItem = items[clickedItemIndex - 1];
-          // 選択予定のアイテムが存在しない場合は何もしない
-          if (! targetItem) {
-            return;
-          }
-
-          // カーソルを保持
-          selection.targetItem = targetItem;
-          // カーソルアイテムを選択
-          this.select(targetItem, isContinuousSelect);
-          // 連続的選択ではない場合は clickedItem を上書き
-          if (! isContinuousSelect) {
-            selection.clickedItem = targetItem;
-          }
-        },
-        select(item, isContinuousSelect = false) {
-          if (! isContinuousSelect) {
-            this.clearSelect();
-          }
-          Polymer.dom(item).classList.add('active');
-          selection.items.push(item);
-        }
       });
 
     })();
