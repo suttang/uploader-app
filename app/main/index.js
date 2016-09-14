@@ -17,8 +17,8 @@ function createWindow() {
   // Create the browser window.
   // win = new BrowserWindow({width: 400, height: 300});
   win = new BrowserWindow({
-    width: 400,
-    height: 300,
+    width: 600,
+    height: 400,
     titleBarStyle: 'hidden-inset',
     backgroundColor: '#f3f3f3',
     title: 'box',
@@ -27,7 +27,7 @@ function createWindow() {
 
 
   // and load the index.html of the app.
-  win.loadURL(`file://${__dirname}/renderer/index.html`);
+  win.loadURL(`file://${__dirname}/../renderer/index.html`);
 
   // Open the DevTools.
   win.webContents.openDevTools();
@@ -77,40 +77,3 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
-
-// Customize menu
-// const template = [{
-//   label: 'Edit',
-//   submenu: [
-//     { role: 'undo' },
-//     { role: 'redo' },
-//     { role: 'separator' },
-//     { role: 'cut' },
-//     { role: 'copy' },
-//     { role: 'paste' },
-//     { role: 'pasteandmatchstyle' },
-//     { role: 'delete' },
-//     { role: 'selectall' },
-//   ],
-// }];
-// if (process.platform === 'darwin') {
-//   const name = app.getName();
-//   template.unshift({
-//     label: name,
-//     submenu: [
-//       { role: 'about' },
-//       { type: 'separator' },
-//       { role: 'services',   submenu: [] },
-//       { type: 'separator' },
-//       { role: 'hide' },
-//       { role: 'hideothers' },
-//       { role: 'unhide' },
-//       { type: 'separator' },
-//       { role: 'quit' }
-//     ]
-//   });
-// }

@@ -2,9 +2,10 @@
   "name": "uploader-app",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "app/main/index.js",
   "scripts": {
-    "start": "electron app"
+    "start": "electron app",
+    "build:darwin": "electron-packager . hoge --platform=darwin --arch=x64"
   },
   "repository": {
     "type": "git",

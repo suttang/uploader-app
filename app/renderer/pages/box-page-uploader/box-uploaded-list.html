@@ -22,19 +22,28 @@
         overflow: visible;
         -webkit-appearance: none;
       }
-      #listContainer option {
+      select#listContainer option {
         width: 100%;
         padding: 10px 10px;
         font-size: 12px;
+        appearance: none;
+        -webkit-appearance: none;
       }
-      #listContainer option.context {
+      select#listContainer option.context {
         font-weight: bold;
+      }
+      select#listContainer[multiple]:focus option:checked {
+        background: red linear-gradient(0deg, red 0%, red 100%);
+      }
+      select#listContainer[multiple] option:checked {
+        background: blue linear-gradient(0deg, blue 0%, blue 100%);
       }
     </style>
 
     <h1>UPLOADS</h1>
     <form id="selectedItems">
       <select multiple id="listContainer" on-change="selectChange">
+        <option class="item" value="" id="" data-name="">aiueo<a href="#" style="background: #0f0">hoge</a></option>
         <template is="dom-repeat" items="{{items}}">
           <option class="item" value="{{item.key}}" id="{{item.key}}" data-name="{{item.name}}" on-contextmenu="openContextMenu">{{item.name}}</option>
         </template>
