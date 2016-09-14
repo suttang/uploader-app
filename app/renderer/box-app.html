@@ -43,7 +43,7 @@
     <!-- STORE -->
     <iron-localstorage name="box:auth:user" value="{{user}}" on-iron-localstorage-load-empty="initializeDefaultUser"></iron-localstorage>
     <!-- /STORE -->
-
+<!--
     <box-titlebar>
       <box-button-group>
         <box-button on-click="showUploadedList">show</box-button>
@@ -51,7 +51,7 @@
         <box-button on-click="uploadFiles">upload</box-button>
       </box-button-group>
     </box-titlebar>
-
+-->
     <box-content>
       <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
         <box-page-login name="login"></box-page-login>

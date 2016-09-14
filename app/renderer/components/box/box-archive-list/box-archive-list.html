@@ -1,54 +1,74 @@
-<dom-module id="box-uploaded-list">
+<dom-module id="box-archive-list">
 
   <template>
     <style>
       :host {
         display: block;
-        background: #f6f6f6;
-        border-right: 1px solid #d1d1d1;
+        background: #F4F4F4;
       }
-      h1 {
-        margin: 0 0 10px 0;
-        padding: 0;
-        line-height: 1;
-        font-size: 9px;
-        font-weight: 500;
+      #draggableArea {
+        width: 100%;
+        height: 39px;
+        background: transparent;
+        -webkit-user-select: none;
+        -webkit-app-region: drag;
       }
-      #listContainer {
+
+      select#listContainer {
         width: 100%;
         border: 0px;
         outline: 0px;
-        background: none;
+        background: transparent;
         overflow: visible;
+        color: #767D82;
         -webkit-appearance: none;
+      }
+
+      #agemaru:checked {
+        color: #f00;
       }
       select#listContainer option {
         width: 100%;
         padding: 10px 10px;
-        font-size: 12px;
+        font-size: 14px;
+        font-weight: 200;
         appearance: none;
         -webkit-appearance: none;
+      }
+      select#listContainer option.selected {
+        color: #767D82;
       }
       select#listContainer option.context {
         font-weight: bold;
       }
+      /*
+        http://jsfiddle.net/vzDvK/1/
+      */
       select#listContainer[multiple]:focus option:checked {
-        background: red linear-gradient(0deg, red 0%, red 100%);
+        color: #767D82;
+        background: white linear-gradient(0deg, white 0%, white 100%);
+        font-weight: 500;
+        -webkit-appearance: none;
       }
       select#listContainer[multiple] option:checked {
-        background: blue linear-gradient(0deg, blue 0%, blue 100%);
+        color: #767D82;
+        background: white linear-gradient(0deg, white 0%, white 100%);
+        font-weight: 500;
+        -webkit-appearance: none;
       }
     </style>
 
-    <h1>UPLOADS</h1>
-    <form id="selectedItems">
-      <select multiple id="listContainer" on-change="selectChange">
-        <option class="item" value="" id="" data-name="">aiueo<a href="#" style="background: #0f0">hoge</a></option>
-        <template is="dom-repeat" items="{{items}}">
-          <option class="item" value="{{item.key}}" id="{{item.key}}" data-name="{{item.name}}" on-contextmenu="openContextMenu">{{item.name}}</option>
-        </template>
-      </select>
-    </form>
+    <!-- in darwin, ドラッグ可能なヘッダエリア -->
+    <div id="draggableArea"></div>
+
+    <div>検索</div>
+
+    <select multiple id="listContainer" on-change="selectChange">
+      <option class="item selected" value="" id="agemaru" data-name="">aiueohoge</option>
+      <template is="dom-repeat" items="{{items}}">
+        <option class="item" value="{{item.key}}" id="{{item.key}}" data-name="{{item.name}}" on-contextmenu="openContextMenu">{{item.name}}</option>
+      </template>
+    </select>
   </template>
 
 
@@ -95,7 +115,7 @@
       let selectedItems = [];
 
       Polymer({
-        is: 'box-uploaded-list',
+        is: 'box-archive-list',
         properties: {
           isOpened: Boolean,
           items: {

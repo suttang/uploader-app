@@ -1,5 +1,5 @@
 <link rel="import" href="../../components/drop-area.html">
-<link rel="import" href="./box-uploaded-list.html">
+<link rel="import" href="../../components/box/box-archive-list/box-archive-list.html">
 <link rel="import" href="./box-file-list.html">
 <link rel="import" href="./box-file-item.html">
 
@@ -28,35 +28,16 @@
         height: 100%;
         overflow: hidden;
       }
-      #column box-uploaded-list {
+      #column box-archive-list {
         flex: 0 0 18em;
-        margin-left: -18em;
         overflow-x: hidden;
         overflow-y: scroll;
-        transition: margin 0.3s ease;
-      }
-      #column.showUploadedList box-uploaded-list {
-        margin-left: 0;
-      }
-      #column #file-list-controller {
-        position: fixed;
-        bottom: 0px;
-        left: 0px;
-        z-index: 1000;
-        width: calc(100% - 1px);
-        height: 80px;
-        margin-left: 1px;
-        background: #fff;
-        transition: margin 0.3s ease;
-      }
-      #column.showUploadedList #file-list-controller {
-        margin-left: calc(18em + 1px);
       }
     </style>
 
 
     <div id="column">
-      <box-uploaded-list id="uploadedList" on-select-change="uploadedSelectChanged"></box-uploaded-list>
+      <box-archive-list id="uploadedList" on-select-change="uploadedSelectChanged"></box-archive-list>
       <box-file-list id="fileList"></box-file-list>
     </div>
 
