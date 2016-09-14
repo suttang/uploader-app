@@ -6,8 +6,7 @@ const {BrowserWindow} = electron;
 // Menu
 const createMenu = require('./menu');
 const {Menu} = electron;
-//
-const {client} = require('electron-connect');
+const {isProduction} = require('../libs/box-util');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -35,9 +34,11 @@ function createWindow() {
   const menu = Menu.buildFromTemplate(createMenu());
   Menu.setApplicationMenu(menu);
 
-
   // Connect to server process
-  client.create(win);
+  if (! isProduction()) {
+    const {client} = require('electron-connect');
+    client.create(win);
+  }
 
   // Emitted when the window is closed.
   win.on('closed', () => {

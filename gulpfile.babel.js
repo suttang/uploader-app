@@ -7,7 +7,10 @@ const useref = require('gulp-useref');
 
 const electron = require('electron-connect').server.create({
   path: `${__dirname}/app/main`,
+  '--release': '',
 });
+
+const ENV = process.env.NODE_ENV || 'development';
 
 gulp.task('serve', () => {
   // Start browser process

@@ -1,3 +1,11 @@
+// start development server
+(() => {
+  if (! require('electron').remote.require('../libs/box-util').isProduction()) {
+    console.log("HOGEHOGEHOGEHOGEHOGEHO");
+    require('electron-connect').client.create();
+  }
+})();
+
 // setup Polymer options
 window.Polymer = { lazyRegister: true, dom: 'shadow' };
 
