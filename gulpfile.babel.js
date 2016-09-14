@@ -10,8 +10,6 @@ const electron = require('electron-connect').server.create({
   '--release': '',
 });
 
-const ENV = process.env.NODE_ENV || 'development';
-
 gulp.task('serve', () => {
   // Start browser process
   electron.start();

@@ -1,7 +1,6 @@
 // start development server
 (() => {
-  if (! require('electron').remote.require('../libs/box-util').isProduction()) {
-    console.log("HOGEHOGEHOGEHOGEHOGEHO");
+  if (require('electron').remote.require('../libs/box-util').isDevelopment()) {
     require('electron-connect').client.create();
   }
 })();

@@ -2,12 +2,12 @@ const env = process.env.NODE_ENV;
 
 module.exports = {
   getEnv() {
-    if (env === 'production') {
-      return env;
-    }
-    return 'development';
+    return env;
   },
   isProduction() {
     return env === 'production';
   },
+  isDevelopment() {
+    return env === 'development';
+  }
 };

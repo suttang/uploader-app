@@ -4,9 +4,9 @@
   "description": "",
   "main": "app/main/index.js",
   "scripts": {
-    "watch": "gulp",
-    "start": "NODE_ENV=production electron .",
-    "build:darwin": "NODE_ENV=production electron-packager . hoge --platform=darwin --arch=x64"
+    "watch": "NODE_ENV=development gulp",
+    "start": "electron .",
+    "build:darwin": "electron-packager . hoge --platform=darwin --arch=x64 --version=1.3.4"
   },
   "repository": {
     "type": "git",
