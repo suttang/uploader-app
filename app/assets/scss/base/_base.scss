@@ -11,6 +11,7 @@ html, body {
     color: #1f1f1f;
     color: #222222;
     overflow: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 :not(input):not(textarea),

@@ -19,7 +19,10 @@ function createWindow() {
     width: 600,
     height: 400,
     titleBarStyle: 'hidden-inset',
-    backgroundColor: '#f3f3f3',
+    // backgroundColor: '#f3f3f3',
+    backgroundColor: '#ffffff',
+    // transparent: true,
+    // frame: false,
     title: 'box',
     show: true,
   });

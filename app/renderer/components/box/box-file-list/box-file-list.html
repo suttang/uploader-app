@@ -1,4 +1,4 @@
-<link rel="import" href="./box-file-item.html">
+<link rel="import" href="../box-file-item/box-file-item.html">
 
 <dom-module id="box-file-list">
 
@@ -7,26 +7,22 @@
       :host {
         width: 100%;
         height: 100%;
+        padding: 5px 0px;
         overflow-y: scroll;
-        /*--box-file-item-bg-color: lightgrey;*/
-        /*--box-file-item-bg-color-odd: red;*/
       }
-      #message.hidden {
+      #fileEmptyMessage {
+
+      }
+      #fileEmptyMessage.hidden {
         display: none;
       }
-      box-file-item:nth-child(odd) {
-        background: #ebebeb;
-      }
-      box-file-item:nth-child(even) {
-        background: #f5f5f5;
-      }
     </style>
+    <div id="fileEmptyMessage">
+      arimasenn
+    </div>
     <div class="file-list">
-      <div id="message">
-        drag and drop then upload files
-      </div>
       <template is="dom-repeat" items="{{items}}">
-        <box-file-item name="{{item.name}}" size="{{item.size}}" on-delete="handleDeleteItem" order="{{index}}"></box-file-item>
+        <box-file-item name="{{item.name}}" size="{{item.size}}" path="{{item.path}}" on-delete="handleDeleteItem" order="{{index}}"></box-file-item>
       </template>
       <content></content>
     </div>
@@ -75,8 +71,9 @@
               name: file.name,
               size: file.size,
             });
-            // ドロップしてねメッセージの削除
-            Polymer.dom(this.$.message).classList.add('hidden');
+
+            // ドロップしてねメッセージを非表示
+            this.hideEmptyMessage();
           }
         },
         handleDeleteItem(event, data) {
@@ -89,10 +86,22 @@
           }
           this.splice('items', index, 1);
 
-          // ドロップしてねメッセージの復活
+          // ドロップしてねメッセージを表示
           if (this.items.length <= 0) {
-            Polymer.dom(this.$.message).classList.remove('hidden');
+            this.showEmptyMessage();
           }
+        },
+        /**
+         * Hide empty message
+         */
+        hideEmptyMessage() {
+          Polymer.dom(this.$.fileEmptyMessage).classList.add('hidden');
+        },
+        /**
+         * Show empty message
+         */
+        showEmptyMessage() {
+          Polymer.dom(this.$.fileEmptyMessage).classList.remove('hidden');
         }
       });
 

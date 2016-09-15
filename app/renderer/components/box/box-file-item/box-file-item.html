@@ -4,44 +4,57 @@
     <style>
       :host {
         display: block;
-        background: var(--box-file-item-bg-color, #fff);
-        padding: 15px 20px;
       }
       .file-item {
         display: flex;
+        padding: 15px 15px;
         font-weight: 500;
         font-size: 12px;
         justify-content: space-between;
+        border-bottom: 1px solid #F4F4F4;
       }
       .file-item img {
         object-fit: contain;
-        width: 40px;
-        height: 40px;
+        width: 55px;
+        height: 55px;
       }
       .file-item .properties {
         width: 100%;
-        height: 40px;
+        height: 55px;
         padding-left: 10px;
-        line-height: 40px;
+        /*line-height: 55px;*/
         text-overflow: ellipsis;
         overflow: hidden;
       }
-      .file-item .properties .filename {
-        font-weight: 500;
-        color: #111
-      }
       .file-item .properties .filesize {
-        font-size: 10px;
-        color: #999;
+        padding-top: 2px;
+        padding-bottom: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #858D93;
+        line-height: 1;
+      }
+      .file-item .properties .filename {
+        padding-bottom: 7px;
+        font-size: 16px;
+        font-weight: 400;
+        color: #4B555D;
+        line-height: 1;
+      }
+      .file-item .properties .filepath {
+        font-size: 12px;
+        font-weight: 200;
+        color: #858D93;
+        line-height: 1;
       }
       .file-item .delete {
-        height: 40px;
+        height: 55px;
       }
       .file-item .delete img {
         object-fit: contain;
-        width: calc(40px / 2);
-        height: calc(40px / 2);
-        margin-top: calc((40px - (40px / 2)) / 2 - 2px);
+        width: calc(55px / 2);
+        height: calc(55px / 2);
+        margin-top: calc((55px - (55px / 2)) / 2 - 2px);
         opacity: 0.25;
       }
       .file-item .delete img:hover {
@@ -54,10 +67,12 @@
     <div class="file-item">
       <img src="../assets/images/icons/{{icon}}">
       <div class="properties">
-        <span class="filename">{{name}}</span><span class="filesize"> - {{size}}</span>
+        <div class="filesize">{{size}}</div>
+        <div class="filename">{{name}}</div>
+        <div class="filepath">{{path}}</div>
       </div>
       <div class="delete" on-click="handleDelete">
-        <img src="../../../assets/images/icon-delete.png">
+        <img src="../../../../assets/images/icon-delete.png">
       </div>
     </div>
   </template>
@@ -66,6 +81,7 @@
     (() => {
 
       const electron = require('electron');
+      // const findIcon = electron.remote.require('../libs/icon-finder');
       const findIcon = electron.remote.require('../libs/icon-finder');
       const filesize = electron.remote.require('filesize');
       Polymer({
@@ -74,6 +90,7 @@
           icon: String,
           name: String,
           size: String,
+          path: String,
         },
         attached() {
           this.icon = findIcon(this.name);

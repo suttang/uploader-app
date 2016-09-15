@@ -38,22 +38,19 @@
       select#listContainer option.selected {
         color: #767D82;
       }
-      select#listContainer option.context {
-        font-weight: bold;
-      }
       /*
         http://jsfiddle.net/vzDvK/1/
       */
       select#listContainer[multiple]:focus option:checked {
         color: #767D82;
         background: white linear-gradient(0deg, white 0%, white 100%);
-        font-weight: 500;
+        /*font-weight: 500;*/
         -webkit-appearance: none;
       }
       select#listContainer[multiple] option:checked {
         color: #767D82;
         background: white linear-gradient(0deg, white 0%, white 100%);
-        font-weight: 500;
+        /*font-weight: 500;*/
         -webkit-appearance: none;
       }
     </style>
@@ -64,7 +61,7 @@
     <div>検索</div>
 
     <select multiple id="listContainer" on-change="selectChange">
-      <option class="item selected" value="" id="agemaru" data-name="">aiueohoge</option>
+      <option class="item selected" value="" id="agemaru" data-name="">新規アーカイブ</option>
       <template is="dom-repeat" items="{{items}}">
         <option class="item" value="{{item.key}}" id="{{item.key}}" data-name="{{item.name}}" on-contextmenu="openContextMenu">{{item.name}}</option>
       </template>
