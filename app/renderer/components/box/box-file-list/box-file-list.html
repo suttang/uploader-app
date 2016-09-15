@@ -11,14 +11,29 @@
         overflow-y: scroll;
       }
       #fileEmptyMessage {
-
+        margin: auto;
+        width: 60%;
+        height: 30%;
+        border: 2px dashed rgba(75,85,93,0.20);
+        border-radius: 4px;
+        font-size: 20px;
+        font-weight: 200;
+        text-align: center;
+        color: #4B555D;
+        line-height: 1;
       }
       #fileEmptyMessage.hidden {
         display: none;
       }
+      #fileEmptyMessage .orBrowse {
+        color: #4B555D;
+        text-decoration: none;
+        font-size: 14px;
+      }
     </style>
     <div id="fileEmptyMessage">
-      arimasenn
+      <div>Drag and Drop files here</div>
+      <a href="#" class="orBrowse">or Browse...</a>
     </div>
     <div class="file-list">
       <template is="dom-repeat" items="{{items}}">
