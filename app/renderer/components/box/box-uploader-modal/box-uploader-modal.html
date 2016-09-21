@@ -80,7 +80,7 @@
     <iron-localstorage name="box:file:items" value="{{files}}" on-iron-localstorage-load-empty="initializeFileItems"></iron-localstorage>
     <!-- /STORE -->
 
-    <box-modal id="modal">
+    <box-modal id="modal" on-cancel="handleModalClose">
       <div id="setPassword" class="contents">
         <h1>Create new archive</h1>
         <p><paper-input label="Download password"></paper-input></p>
@@ -205,6 +205,9 @@
         handleOkPressed(event) {
           this.fire('complete');
           this.showSetPasswordScreen();
+        },
+        handleModalClose(event) {
+          this.fire('close');
         },
         initializeFileItems() {
           this.files = [];
