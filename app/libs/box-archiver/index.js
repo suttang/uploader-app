@@ -1,6 +1,6 @@
 const os = require('os');
 const fs = require('fs');
-const {EventEmitter} = require('events');
+const path = require('path');
 const archiver = require('archiver');
 const moment = require('moment');
 const {app} = require('electron');
@@ -12,18 +12,26 @@ const stat = Promise.promisify(fs.stat);
 const archiveType = 'zip';
 const archiveBaseFilePath = `${os.tmpdir()}/${app.getName()}`;
 
-class BoxArchiver extends EventEmitter {
+class BoxArchiver {
   constructor() {
-    super();
     this.files = [];
     this.baseFilepath = `${archiveBaseFilePath}`;
     this.filename = '';
     this.filepath = '';
   }
 
-  add(file, type) {
-    const item = new BoxArchiveItem(file, type);
-    this.files.push(item);
+  add(filepath) {
+    return stat(filepath).then(stats => {
+      const filesize = stats.size;
+      const filename = path.basename(filepath);
+      const filetype = stats.isFile()? 'file': (stats.isDirectory()? 'directory': false);
+      if (! filetype) {
+        return Promise.reject(filepath);
+      }
+      const item = new BoxArchiveItem(filepath, filesize, filename, filetype);
+      this.files.push(item);
+      return Promise.resolve(item);
+    });
   }
 
   clear() {
@@ -34,7 +42,7 @@ class BoxArchiver extends EventEmitter {
     this.filename = moment().format('YYYY-MM-DD_HH-mm-ss.SSS') + '.zip';
     this.filepath = `${this.baseFilepath}/${this.filename}`;
 
-    stat(archiveBaseFilePath)
+    return stat(archiveBaseFilePath)
     // ディレクトリが存在するかどうか確認・なかったら作成
     .catch(error => {
       if (error.code == 'ENOENT') {
@@ -44,23 +52,26 @@ class BoxArchiver extends EventEmitter {
     })
     // アーカイブ作成
     .then(() => {
-      const archive = archiver(archiveType);
-      const output = fs.createWriteStream(this.filepath);
-      output.on('close', () => {
-        this.emit('complete', archive);
-      });
+      return new Promise((resolve, reject) => {
+        const archive = archiver(archiveType);
+        const output = fs.createWriteStream(this.filepath);
 
-      archive.pipe(output);
-      for (let file of this.files) {
-        if (file.isFile) {
-          archive.append(fs.createReadStream(file.path), { name: file.name });
-        } else if (file.isDirectory) {
-          archive.directory(file.path, file.name, file.file);
-        } else {
-          continue;
+        output.on('close', () => {
+          resolve(archive);
+        });
+
+        archive.pipe(output);
+        for (let file of this.files) {
+          if (file.isFile) {
+            archive.append(fs.createReadStream(file.path), { name: file.name });
+          } else if (file.isDirectory) {
+            archive.directory(file.path, file.name, file.file);
+          } else {
+            continue;
+          }
         }
-      }
-      archive.finalize();
+        archive.finalize();
+      });
     }).catch(error => {
       console.log(error);
     });
@@ -89,33 +100,11 @@ class BoxArchiveItem {
    * @param  {File}   file
    * @param  {String} type
    */
-  constructor(file, type) {
-    this.file = file;
+  constructor(path, size, name, type) {
+    this.path = path;
+    this.size = size;
+    this.name = name;
     this.type = type;
-  }
-
-  /**
-   * ファイルのパスを返す
-   * @return {String} ファイルパス
-   */
-  get path() {
-    return this.file.path;
-  }
-
-  /**
-   * ファイルのサイズを返す
-   * @return {Number} ファイルサイズ
-   */
-  get size() {
-    return this.file.size;
-  }
-
-  /**
-   * ファイル名を返す
-   * @return {String} ファイル名
-   */
-  get name() {
-    return this.file.name;
   }
 
   /**

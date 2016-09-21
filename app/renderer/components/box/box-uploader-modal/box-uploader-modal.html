@@ -42,9 +42,20 @@
           height: 1px;
           background: #9C9EA5;
         }
+        /*
+          https://elements.polymer-project.org/elements/paper-progress
+         */
+         --paper-progress-height: 3px;
+         --paper-progress-container-color: #fff;
+         --paper-progress-transition-duration: 200ms;
+         --paper-progress-active-color: #5386DD;
       }
       .contents {
+        display: none;
         padding: 50px 60px;
+      }
+      .contents.show {
+        display: block;
       }
       .contents.hidden {
         display: none;
@@ -59,9 +70,10 @@
       :host-context(box-uploader-modal) {
         background: #fff !important;
       }
-      :host input {
-        color: #fff;
+      paper-progress {
+        width: 100%;
       }
+
     </style>
 
     <!-- STORE -->
@@ -78,7 +90,15 @@
       <div id="uploadProgress" class="contents">
         <h1>Create new archive</h1>
         <p>uploading</p>
-        <paper-progress></paper-progress>
+        <paper-progress class="transiting"></paper-progress>
+      </div>
+      <div id="sendEmail" class="contents">
+        <h1>Create new archive</h1>
+        <div>
+          <p>Download URL</p>
+        </div>
+        koreha oisii
+        <box-button type="primary" on-click="handleOkPressed">OK</box-button>
       </div>
     </box-modal>
 
@@ -86,6 +106,9 @@
 
   <script>
     (() => {
+      const electron = require('electron');
+      const {BoxArchiver} = electron.remote.require('../libs/box-archiver');
+
       Polymer({
         is: 'box-uploader-modal',
         properties: {
@@ -96,23 +119,92 @@
             }
           }
         },
+        attached() {
+          Polymer.dom(this.$.setPassword).classList.add('show');
+        },
         show() {
+          Polymer.dom(this.$.setPassword).classList.add('show');
           this.$.modal.show();
         },
         hide() {
           this.$.modal.hide();
         },
         compress() {
-          // Collect file entries
+          const _this = this;
+          // Archive
+          const archive = new BoxArchiver();
+
+          // Add file entry to archive
+          const promises = [];
           for (let item of this.files) {
-            console.log(item);
-            // archive.add(item.file, item.type);
+            promises.push(archive.add(item.path));
           }
 
+          Promise.all(promises)
+          // Create archive
+          .then(archiveItems => {
+            return archive.create();
+          })
+          //
+          .then(() => {
+            return archive.load();
+          })
+          // Upload archive to firebase storage
+          .then(data => {
+            const blob = new Blob([data], {});
+            const storage = firebase.storage().ref().child(archive.filename);
+            const upload = storage.put(blob, {});
+            upload.on('state_changed', this.handleUploadProgress.bind(this));
+            return upload;
+          })
+          // Save archive to firebase database
+          .then(response => {
+            const uuid = firebase.auth().currentUser.uid;
+            return firebase.database().ref(`uploads/${uuid}`).push({
+              name: archive.filename,
+              files: archive.files,
+              created_at: Date.now(),
+            });
+          })
+          // Archive upload complete
+          .then(response => {
+            console.log("FILE UPLOAD COMPLETE");
+            setTimeout(() => {
+              this.showSendEmail();
+            }, 500);
+          }).catch(error => {
+            console.log(error);
+          });
+        },
+        showSetPasswordScreen() {
+          Polymer.dom(this.$.sendEmail).classList.remove('show');
+          Polymer.dom(this.$.setPassword).classList.add('show');
+          // files を空にする
+          this.splice('files', 0, this.files.length);
+        },
+        showUploadProgress() {
+          Polymer.dom(this.$.setPassword).classList.remove('show');
+          Polymer.dom(this.$.uploadProgress).classList.add('show');
+        },
+        showSendEmail() {
+          Polymer.dom(this.$.uploadProgress).classList.remove('show');
+          Polymer.dom(this.$.sendEmail).classList.add('show');
+          // プログレスバーをゼロに
+          this.$$('paper-progress').value = 0;
         },
         handleUploadPressed() {
-          Polymer.dom(this.$.setPassword).classList.add('hidden');
+          this.showUploadProgress();
           this.compress();
+        },
+        handleUploadCancelPressed() {
+
+        },
+        handleUploadProgress(event) {
+          this.$$('paper-progress').value = event.bytesTransferred / event.totalBytes * 100;
+        },
+        handleOkPressed(event) {
+          this.fire('complete');
+          this.showSetPasswordScreen();
         },
         initializeFileItems() {
           this.files = [];

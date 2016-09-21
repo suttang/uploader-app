@@ -53,9 +53,11 @@
       Polymer({
         is: 'box-modal',
         show() {
+          Polymer.dom(this).classList.remove('hidden');
           Polymer.dom(this).classList.add('shown');
         },
         hide() {
+          Polymer.dom(this).classList.remove('shown');
           Polymer.dom(this).classList.add('hidden');
         }
       });

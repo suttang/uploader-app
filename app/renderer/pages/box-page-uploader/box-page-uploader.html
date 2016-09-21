@@ -57,7 +57,7 @@
       </div>
     </div>
 
-    <box-uploader-modal id="modal"></box-uploader-modal>
+    <box-uploader-modal id="modal" on-complete="handleModalCompleted"></box-uploader-modal>
   </template>
 
   <script>
@@ -176,6 +176,10 @@
         Polymer.dom(this).classList.add('modalShown');
         this.$.modal.show();
         // console.log("HANDLE UPLOAD");
+      },
+      handleModalCompleted(event) {
+        Polymer.dom(this).classList.remove('modalShown');
+        this.$.modal.hide();
       }
     });
 
