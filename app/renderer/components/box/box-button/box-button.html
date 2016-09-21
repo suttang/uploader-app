@@ -1,0 +1,82 @@
+<dom-module id="box-button">
+
+  <template>
+    <style>
+      :host {
+        position: relative;
+        display: inline-block;
+        width: 200px;
+        height: 50px;
+        border-radius: 25px;
+        line-height: 50px;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: center;
+      }
+      :host(.hasIcon) {
+        padding-left: 10px;
+      }
+      :host([type="primary"]) {
+        background: #4A5362;
+        color: #fff;
+      }
+      :host([type="primary"]:hover) {
+        background: #4F5868;
+      }
+      :host([type="primary"]:active) {
+        background: #23272E;
+      }
+      #iconContainer {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 50px;
+        height: 50px;
+        display: inline-block;
+        padding-left: 5px;
+      }
+      #iconContainer > * {
+        display: block;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+      }
+      /*
+        #iconContainer /deep/ svg {
+       */
+      #iconContainer ::shadow svg {
+        vertical-align: top;
+        width: 100%;
+        height: 100%;
+        min-width: 100%;
+        min-height: 100%;
+      }
+    </style>
+
+    <div id="iconContainer"></div>
+    <content></content>
+
+  </template>
+
+  <script>
+
+    Polymer({
+      is: 'box-button',
+      properties: {
+        icon: {
+          type: String,
+        },
+      },
+      attached() {
+        if (this.icon) {
+          const icon = document.createElement(this.icon);
+          Polymer.dom(this.$.iconContainer).appendChild(icon);
+          Polymer.dom(this).classList.add('hasIcon');
+        }
+      },
+    });
+
+  </script>
+
+</dom-module>

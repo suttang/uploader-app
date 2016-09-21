@@ -31,9 +31,14 @@
         font-size: 14px;
       }
     </style>
+
+    <!-- STORE -->
+    <iron-localstorage name="box:file:items" value="{{items}}" on-iron-localstorage-load-empty="initializeFileItems"></iron-localstorage>
+    <!-- /STORE -->
+
     <div id="fileEmptyMessage">
       <div>Drag and Drop files here</div>
-      <a href="#" class="orBrowse">or Browse...</a>
+      <a href="#" class="orBrowse" tabindex="-1">or Browse...</a>
     </div>
     <div class="file-list">
       <template is="dom-repeat" items="{{items}}">
@@ -56,6 +61,32 @@
             }
           }
         },
+        addItems(items) {
+          console.log("AIUEO");
+          // console.log(items);
+        },
+        showNewArchive() {
+          // clear file list
+          this.splice('items', 0, this.items.length);
+          // ドロップしてねメッセージを表示
+          this.showEmptyMessage();
+        },
+        showArchiveItem(archiveItem) {
+          // clear file list
+          this.splice('items', 0, this.items.length);
+          // add items
+          for (let item of archiveItem.files) {
+            this.push('items', {
+              file: null,
+              type: item.type,
+              path: '/path/to/file',
+              name: item.name,
+              size: item.size,
+            });
+          }
+          // ドロップしてねメッセージを非表示
+          this.hideEmptyMessage();
+        },
         addItemsFromDataTransfer(dataTransfer) {
           const length = dataTransfer.items.length;
           for (let i = 0; i < length; i++) {
@@ -74,22 +105,20 @@
             }
 
             // 同じ名前が既に登録されている場合は追加しない
-            const hasAdded = this.items.filter((item) => item.path == file.path).length > 0;
+            const hasAdded = this.items.filter(item => item.path == file.path).length > 0;
             if (hasAdded) {
               continue;
             }
-
             this.push('items', {
-              file: file,
+              // file: file,
               type: fileType,
               path: file.path,
               name: file.name,
               size: file.size,
             });
-
-            // ドロップしてねメッセージを非表示
-            this.hideEmptyMessage();
           }
+          // ドロップしてねメッセージを非表示
+          this.hideEmptyMessage();
         },
         handleDeleteItem(event, data) {
           let index, item;
@@ -117,7 +146,10 @@
          */
         showEmptyMessage() {
           Polymer.dom(this.$.fileEmptyMessage).classList.remove('hidden');
-        }
+        },
+        initializeFileItems() {
+          this.items = [];
+        },
       });
 
       function getFileType(entry) {

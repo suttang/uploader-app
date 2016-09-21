@@ -1,6 +1,9 @@
 <link rel="import" href="../../components/drop-area.html">
 <link rel="import" href="../../components/box/box-archive-list/box-archive-list.html">
 <link rel="import" href="../../components/box/box-file-list/box-file-list.html">
+<link rel="import" href="../../components/box/box-button/box-button.html">
+<link rel="import" href="../../components/box/box-icon/box-icon-upload.html">
+<link rel="import" href="../../components/box/box-uploader-modal/box-uploader-modal.html">
 
 
 <dom-module id="box-page-uploader">
@@ -11,6 +14,9 @@
         display: block;
         width: 100%;
         height: 100%;
+      }
+      :host(.modalShown) #column {
+        -webkit-filter: blur(2px);
       }
       strong {
           font-weight: 500;
@@ -26,20 +32,32 @@
         height: 100%;
         overflow: hidden;
       }
+      #column #rightColumn {
+        width: 100%;
+        overflow-y: scroll;
+        position: relative;
+      }
       #column box-archive-list {
         flex: 0 0 18em;
         overflow-x: hidden;
         overflow-y: scroll;
       }
+      #uploadButton {
+        position: fixed;
+        left: 50%;
+        bottom: 10px;
+      }
     </style>
-
 
     <div id="column">
       <box-archive-list id="uploadedList" on-select-change="uploadedSelectChanged"></box-archive-list>
-      <box-file-list id="fileList"></box-file-list>
+      <div id="rightColumn">
+        <box-file-list id="fileList"></box-file-list>
+        <box-button type="primary" id="uploadButton" icon="box-icon-upload" on-click="handleUploadPressed">Upload</box-button>
+      </div>
     </div>
 
-
+    <box-uploader-modal id="modal"></box-uploader-modal>
   </template>
 
   <script>
@@ -133,13 +151,31 @@
         this.$.column.classList.add('showUploadedList');
         this.$.uploadedList.open();
       },
+      /**
+       * アーカイブリストの選択が変更されたイベントのハンドラ
+       * @param  {[type]} event [description]
+       * @param  {[type]} items [description]
+       * @return {[type]}       [description]
+       */
       uploadedSelectChanged(event, items) {
         if (items.length > 1) {
           console.log('select multiple items');
           return;
         }
+        const item = items[0];
 
-        console.log(items)
+        // 新規作成の場合
+        if (item.id === '') {
+          this.$.fileList.showNewArchive();
+          return;
+        }
+        const archiveItem = this.$.uploadedList.getArchiveItemById(item.id);
+        this.$.fileList.showArchiveItem(archiveItem);
+      },
+      handleUploadPressed(event) {
+        Polymer.dom(this).classList.add('modalShown');
+        this.$.modal.show();
+        // console.log("HANDLE UPLOAD");
       }
     });
 

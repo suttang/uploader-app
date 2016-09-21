@@ -1,0 +1,124 @@
+<link rel="import" href="../box-modal/box-modal.html">
+<link rel="import" href="../box-button/box-button.html">
+<link rel="import" href="../../../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../../../bower_components/paper-progress/paper-progress.html">
+
+
+<dom-module id="box-uploader-modal">
+
+  <template>
+    <style>
+      :root {
+        /*
+          https://elements.polymer-project.org/elements/paper-input?active=paper-input-container
+         */
+        --paper-input-container-input: {
+          color: #fff;
+          font-family: 'Open Sans', sans-serif;
+          font-weight: 400;
+          font-size: 14px;
+        }
+        --paper-input-container-label: {
+          color: #858D93;
+          font-family: 'Open Sans', sans-serif;
+          font-weight: 400;
+          font-size: 14px;
+        }
+        --paper-input-container-label-focus: {
+          color: #858D93;
+          font-family: 'Open Sans', sans-serif;
+          font-weight: 400;
+          font-size: 14px;
+          transform: translateY(-85%) scale(0.85);
+        }
+        --paper-input-container-label-floating: {
+          font-weight: 400;
+          transform: translateY(-85%) scale(0.85);
+        }
+        --paper-input-container-underline: {
+          background: #535457;
+        }
+        --paper-input-container-underline-focus: {
+          height: 1px;
+          background: #9C9EA5;
+        }
+      }
+      .contents {
+        padding: 50px 60px;
+      }
+      .contents.hidden {
+        display: none;
+      }
+      .contents h1 {
+        font-size: 24px;
+        font-weight: 200;
+        color: #fff;
+        margin: 0;
+        padding: 0;
+      }
+      :host-context(box-uploader-modal) {
+        background: #fff !important;
+      }
+      :host input {
+        color: #fff;
+      }
+    </style>
+
+    <!-- STORE -->
+    <iron-localstorage name="box:file:items" value="{{files}}" on-iron-localstorage-load-empty="initializeFileItems"></iron-localstorage>
+    <!-- /STORE -->
+
+    <box-modal id="modal">
+      <div id="setPassword" class="contents">
+        <h1>Create new archive</h1>
+        <p><paper-input label="Download password"></paper-input></p>
+        <p><paper-input label="Archive password"></paper-input></p>
+        <box-button type="primary" icon="box-icon-upload" on-click="handleUploadPressed">Upload</box-button>
+      </div>
+      <div id="uploadProgress" class="contents">
+        <h1>Create new archive</h1>
+        <p>uploading</p>
+        <paper-progress></paper-progress>
+      </div>
+    </box-modal>
+
+  </template>
+
+  <script>
+    (() => {
+      Polymer({
+        is: 'box-uploader-modal',
+        properties: {
+          files: {
+            type: Array,
+            value: function() {
+              return [];
+            }
+          }
+        },
+        show() {
+          this.$.modal.show();
+        },
+        hide() {
+          this.$.modal.hide();
+        },
+        compress() {
+          // Collect file entries
+          for (let item of this.files) {
+            console.log(item);
+            // archive.add(item.file, item.type);
+          }
+
+        },
+        handleUploadPressed() {
+          Polymer.dom(this.$.setPassword).classList.add('hidden');
+          this.compress();
+        },
+        initializeFileItems() {
+          this.files = [];
+        },
+      });
+    })();
+  </script>
+
+</dom-module>

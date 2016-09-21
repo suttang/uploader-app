@@ -55,13 +55,18 @@
       }
     </style>
 
+    <!-- STORE -->
+    <iron-localstorage name="box:archive:items" value="{{items}}" on-iron-localstorage-load-empty="initializeArchiveItems"></iron-localstorage>
+    <iron-localstorage name="box:auth:user" value="{{user}}" on-iron-localstorage-load-empty="initializeDefaultUser"></iron-localstorage>
+    <!-- /STORE -->
+
     <!-- in darwin, ドラッグ可能なヘッダエリア -->
     <div id="draggableArea"></div>
 
     <div>検索</div>
 
-    <select multiple id="listContainer" on-change="selectChange">
-      <option class="item selected" value="" id="agemaru" data-name="">新規アーカイブ</option>
+    <select multiple id="listContainer" on-change="selectChange" tabindex="-1">
+      <option class="item selected" value="">新規アーカイブ</option>
       <template is="dom-repeat" items="{{items}}">
         <option class="item" value="{{item.key}}" id="{{item.key}}" data-name="{{item.name}}" on-contextmenu="openContextMenu">{{item.name}}</option>
       </template>
@@ -114,7 +119,11 @@
       Polymer({
         is: 'box-archive-list',
         properties: {
+          // user: Object,
           isOpened: Boolean,
+          user: {
+            type: Object,
+          },
           items: {
             type: Array,
             value: function() {
@@ -122,14 +131,12 @@
             }
           },
         },
-        ready() {
-          setTimeout(() => {
-            const uuid = firebase.auth().currentUser.uid;
-            const uploadsRef = firebase.database().ref(`uploads/${uuid}`);
-            uploadsRef.on('value', (snapshot) => {
-              this.refresh(snapshot.val());
-            });
-          }, 2000);
+        attached() {
+          const uuid = this.user.uid;
+          const uploadsRef = firebase.database().ref(`uploads/${uuid}`);
+          uploadsRef.on('value', snapshot => {
+            this.refresh(snapshot.val());
+          });
         },
         refresh(entries) {
           // empty
@@ -158,6 +165,23 @@
         selectChange() {
           selectedItems = Polymer.dom(this.root).querySelectorAll('option.item:checked');
           this.fire('select-change', selectedItems);
+        },
+        getArchiveItemById(archiveId) {
+          const item = this.items.filter(item => item.key === archiveId);
+          if (item.length > 0) {
+            return item[0];
+          }
+          return null;
+        },
+        initializeArchiveItems() {
+          this.items = [];
+        },
+        initializeDefaultUser() {
+          this.user = {
+            uid: '',
+            email: '',
+            displayName: '',
+          };
         },
       });
 
