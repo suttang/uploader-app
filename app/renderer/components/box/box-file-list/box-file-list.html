@@ -61,6 +61,11 @@
             }
           }
         },
+        ready() {
+          // items を空にする
+          this.splice('items', 0, this.items.length);
+          console.log(this.items);
+        },
         addItems(items) {
           console.log("AIUEO");
           // console.log(items);

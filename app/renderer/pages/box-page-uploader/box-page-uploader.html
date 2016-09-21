@@ -42,10 +42,37 @@
         overflow-x: hidden;
         overflow-y: scroll;
       }
+      /*
+       * UPLOAD BUTTON
+       */
       #uploadButton {
+        display: none;
         position: fixed;
         left: 50%;
-        bottom: 10px;
+        bottom: 20px;
+      }
+      #uploadButton.show {
+        display: block;
+        -webkit-animation-name: show-upload-button;
+        -webkit-animation-duration: 300ms;
+        -webkit-transition-timing-function: cubic-bezier(.08,.34,.36,.99);
+      }
+      @-webkit-keyframes show-upload-button {
+        0% {
+          display: none;
+          opacity: 0.5;
+          transform: translateY(10px);
+        }
+        1% {
+          display: block;
+          opacity: 0.5;
+          transform: translateY(10px);
+        }
+        100% {
+          display: block;
+          opacity: 1;
+          transform: translateY(0px);
+        }
       }
     </style>
 
@@ -61,128 +88,106 @@
   </template>
 
   <script>
-    const electron = require('electron');
-    const {BoxArchiver} = electron.remote.require('../libs/box-archiver');
-
-    let archive = new BoxArchiver();
-
-    Polymer({
-      is: 'box-page-uploader',
-      listeners: {
-        dragenter: 'handleDragEnter',
-        dragover: 'handleDragOver',
-        dragleave: 'handleDragLeave',
-        drop: 'handleDrop',
-      },
-      properties: {},
-      handleDragEnter(event) {
+    (() => {
+      const MODE_CREATE = 'MODE_CREATE';
+      const MODE_HISTORY = 'MODE_HISTORY';
+      Polymer({
+        is: 'box-page-uploader',
+        listeners: {
+          dragenter: 'handleDragEnter',
+          dragover: 'handleDragOver',
+          dragleave: 'handleDragLeave',
+          drop: 'handleDrop',
+        },
+        properties: {
+          mode: String,
+        },
+        handleDragEnter(event) {
           event.preventDefault();
-      },
-      handleDragOver(event) {
+        },
+        handleDragOver(event) {
           event.preventDefault();
-      },
-      handleDragLeave(event) {
+        },
+        handleDragLeave(event) {
           event.preventDefault();
-      },
-      handleDrop(event) {
-        event.preventDefault();
-        this.$.fileList.addItemsFromDataTransfer(event.dataTransfer);
-      },
-      handleArchiveComplete(archive) {
-        console.log(archive.pointer());
-      },
-      /**
-       * clear file list
-       */
-      clear() {
-        archive.clear();
-        // this.splice('files', 0, this.files.length);
-      },
+        },
+        handleDrop(event) {
+          event.preventDefault();
+          if (this.mode !== MODE_CREATE) {
+            return;
+          }
+          this.showUploadButton();
+          this.$.fileList.addItemsFromDataTransfer(event.dataTransfer);
+        },
+        handleArchiveComplete(archive) {
+          console.log(archive.pointer());
+        },
+        /**
+         * clear file list
+         */
+        clear() {
+          archive.clear();
+          // this.splice('files', 0, this.files.length);
+        },
+        hideUploadedList() {
+          this.$.column.classList.remove('showUploadedList');
+          this.$.uploadedList.close();
+        },
+        showUploadedList() {
+          this.$.column.classList.add('showUploadedList');
+          this.$.uploadedList.open();
+        },
+        /**
+         * アーカイブリストの選択が変更されたイベントのハンドラ
+         * @param  {[type]} event [description]
+         * @param  {[type]} items [description]
+         * @return {[type]}       [description]
+         */
+        uploadedSelectChanged(event, items) {
+          if (items.length > 1) {
+            console.log('select multiple items');
+            return;
+          }
+          const item = items[0];
 
-      compress() {
-        // Collect file entries
-        const items = this.$.fileList.items;
-        for (let item of items) {
-          archive.add(item.file, item.type);
+          // 新規作成の場合
+          if (item.id === '') {
+            this.mode = MODE_CREATE;
+            this.$.fileList.showNewArchive();
+            return;
+          }
+          this.mode = MODE_HISTORY;
+          this.hideUploadButton();
+
+          // それ以外 (アップロード済みアイテムの選択) の場合
+          const archiveItem = this.$.uploadedList.getArchiveItemById(item.id);
+          this.$.fileList.showArchiveItem(archiveItem);
+        },
+        /**
+         * アップロードボタンの表示
+         * @return {[type]} [description]
+         */
+        showUploadButton() {
+          Polymer.dom(this.$.uploadButton).classList.add('show');
+        },
+        /**
+         * アップロードボタンの非表示
+         * @return {[type]} [description]
+         */
+        hideUploadButton() {
+          Polymer.dom(this.$.uploadButton).classList.remove('show');
+        },
+        handleUploadPressed(event) {
+          Polymer.dom(this).classList.add('modalShown');
+          this.$.modal.show();
+          // console.log("HANDLE UPLOAD");
+        },
+        handleModalCompleted(event) {
+          Polymer.dom(this).classList.remove('modalShown');
+          this.$.modal.hide();
         }
-
-        const progressHandler = (event) => {
-          console.log(`${event.bytesTransferred / event.totalBytes * 100}%`);
-        }
-
-        // Archive
-        archive.once('complete', () => {
-          archive.load().then(data => {
-            const blob = new Blob([data], {});
-            const storage = firebase.storage().ref().child(archive.filename);
-            const upload = storage.put(blob, {});
-            upload.on('state_changed', progressHandler);
-            return upload;
-          }).then(response => {
-            // constract database data
-            const files = [];
-            for (let file of archive.files) {
-              files.push({
-                name: file.name,
-                size: file.size,
-                type: file.type,
-              });
-            }
-            // save database
-            const uuid = firebase.auth().currentUser.uid;
-            return firebase.database().ref(`uploads/${uuid}`).push({
-              name: archive.filename,
-              files: files,
-              created_at: Date.now(),
-            });
-          }).then(response => {
-            console.log("FILE UPLOAD COMPLETE");
-          }).catch(error => {
-            console.log(error);
-          });
-        });
-        archive.create();
-      },
-      hideUploadedList() {
-        this.$.column.classList.remove('showUploadedList');
-        this.$.uploadedList.close();
-      },
-      showUploadedList() {
-        this.$.column.classList.add('showUploadedList');
-        this.$.uploadedList.open();
-      },
-      /**
-       * アーカイブリストの選択が変更されたイベントのハンドラ
-       * @param  {[type]} event [description]
-       * @param  {[type]} items [description]
-       * @return {[type]}       [description]
-       */
-      uploadedSelectChanged(event, items) {
-        if (items.length > 1) {
-          console.log('select multiple items');
-          return;
-        }
-        const item = items[0];
-
-        // 新規作成の場合
-        if (item.id === '') {
-          this.$.fileList.showNewArchive();
-          return;
-        }
-        const archiveItem = this.$.uploadedList.getArchiveItemById(item.id);
-        this.$.fileList.showArchiveItem(archiveItem);
-      },
-      handleUploadPressed(event) {
-        Polymer.dom(this).classList.add('modalShown');
-        this.$.modal.show();
-        // console.log("HANDLE UPLOAD");
-      },
-      handleModalCompleted(event) {
-        Polymer.dom(this).classList.remove('modalShown');
-        this.$.modal.hide();
-      }
-    });
-
+      });
+    })();
   </script>
 
 </dom-module>
