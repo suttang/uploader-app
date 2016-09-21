@@ -65,7 +65,7 @@
       }
     </style>
     <div class="file-item">
-      <img src="../assets/images/icons/{{icon}}">
+      <img src="{{icon}}">
       <div class="properties">
         <div class="filesize">{{size}}</div>
         <div class="filename">{{name}}</div>
@@ -93,7 +93,7 @@
           path: String,
         },
         attached() {
-          this.icon = findIcon(this.name);
+          this.icon = `../assets/images/icons/${findIcon(this.name)}`;
           this.size = filesize(this.size);
         },
         handleDelete() {

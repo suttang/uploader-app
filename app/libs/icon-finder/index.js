@@ -6,6 +6,7 @@ const extIconMap = {
   htm: 'icon-html.png',
   html: 'icon-html.png',
   jpg: 'icon-jpg.png',
+  gif: 'icon-gif.png',
   mp3: 'icon-mp3.png',
   pdf: 'icon-pdf.png',
   png: 'icon-png.png',
@@ -26,5 +27,5 @@ module.exports = function findIcon(filename) {
   if (icon) {
     return icon;
   }
-  return extIconMap[fallbackIcon];
+  return fallbackIcon;
 };
