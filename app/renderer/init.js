@@ -38,3 +38,9 @@ var config = {
     storageBucket: "box-app-be028.appspot.com",
 };
 firebase.initializeApp(config);
+
+// Webframe setting
+(() => {
+  const webFrame = require('electron').webFrame;
+  webFrame.setZoomLevelLimits(1, 1);
+})();
