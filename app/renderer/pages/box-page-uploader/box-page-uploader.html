@@ -117,7 +117,11 @@
             return;
           }
           this.showUploadButton();
-          this.$.fileList.addItemsFromDataTransfer(event.dataTransfer);
+          const files = [];
+          for (let item of event.dataTransfer.files) {
+            files.push(item.path);
+          }
+          this.$.fileList.addItems(files);
         },
         handleArchiveComplete(archive) {
           console.log(archive.pointer());

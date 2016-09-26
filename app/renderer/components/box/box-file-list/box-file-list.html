@@ -1,4 +1,5 @@
 <link rel="import" href="../box-file-item/box-file-item.html">
+<link rel="import" href="../box-icon/box-icon-arrow-bottom.html">
 
 <dom-module id="box-file-list">
 
@@ -11,24 +12,37 @@
         overflow-y: scroll;
       }
       #fileEmptyMessage {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        width: 380px;
+        height: 200px;
         margin: auto;
-        width: 60%;
-        height: 30%;
+        padding: 45px;
         border: 2px dashed rgba(75,85,93,0.20);
         border-radius: 4px;
         font-size: 20px;
         font-weight: 200;
         text-align: center;
         color: #4B555D;
-        line-height: 1;
+        line-height: 1.2;
+        box-sizing: border-box;
       }
       #fileEmptyMessage.hidden {
         display: none;
       }
       #fileEmptyMessage .orBrowse {
-        color: #4B555D;
+        color: #2884D6;
         text-decoration: none;
         font-size: 14px;
+        font-weight: 500;
+        outline: none;
+      }
+      #fileEmptyMessage box-icon-arrow-bottom.icon {
+        display: inline-block;
+        margin-bottom: 15px;
       }
     </style>
 
@@ -37,9 +51,11 @@
     <!-- /STORE -->
 
     <div id="fileEmptyMessage">
+      <box-icon-arrow-bottom class="icon"></box-icon-arrow-bottom>
       <div>Drag and Drop files here</div>
-      <a href="#" class="orBrowse" tabindex="-1">or Browse...</a>
+      <a href="#" class="orBrowse" on-click="openFileBrowser" tabindex="-1">or Browse...</a>
     </div>
+
     <div class="file-list">
       <template is="dom-repeat" items="{{items}}">
         <box-file-item name="{{item.name}}" size="{{item.size}}" path="{{item.path}}" on-delete="handleDeleteItem" order="{{index}}"></box-file-item>
@@ -51,6 +67,10 @@
   <script>
     (() => {
 
+      const electron = require('electron');
+      const {dialog} = electron.remote;
+      const {fileStat} = electron.remote.require('../libs/box-util');
+
       Polymer({
         is: 'box-file-list',
         properties: {
@@ -61,14 +81,17 @@
             }
           }
         },
+        listeners: {
+          'added': 'added',
+        },
         ready() {
           // items を空にする
           this.splice('items', 0, this.items.length);
           console.log(this.items);
         },
-        addItems(items) {
-          console.log("AIUEO");
-          // console.log(items);
+        added() {
+          // ドロップしてねメッセージを非表示
+          this.hideEmptyMessage();
         },
         showNewArchive() {
           // clear file list
@@ -89,41 +112,25 @@
               size: item.size,
             });
           }
-          // ドロップしてねメッセージを非表示
-          this.hideEmptyMessage();
+          this.fire('added');
         },
-        addItemsFromDataTransfer(dataTransfer) {
-          const length = dataTransfer.items.length;
-          for (let i = 0; i < length; i++) {
-            const item = dataTransfer.items[i];
-            const file = dataTransfer.files[i];
-            const fileType = getFileType(item.webkitGetAsEntry());
-
-            // ファイルがnullの場合は追加しない (.weblockとか謎の挙動)
-            if (! file) {
-              continue;
+        addItems(items) {
+          Promise.all(items.map(filepath => fileStat(filepath))).then(statsList => {
+            for (let stats of statsList) {
+              // 同じ名前が既に登録されている場合は追加しない
+              const hasAdded = this.items.filter(item => item.path == stats.filepath).length > 0;
+              if (hasAdded) {
+                continue;
+              }
+              this.push('items', {
+                type: stats.filetype,
+                path: stats.filepath,
+                name: stats.filename,
+                size: stats.filesize,
+              });
             }
-
-            // ファイルタイプが謎の場合は追加しない
-            if (! fileType) {
-              continue;
-            }
-
-            // 同じ名前が既に登録されている場合は追加しない
-            const hasAdded = this.items.filter(item => item.path == file.path).length > 0;
-            if (hasAdded) {
-              continue;
-            }
-            this.push('items', {
-              // file: file,
-              type: fileType,
-              path: file.path,
-              name: file.name,
-              size: file.size,
-            });
-          }
-          // ドロップしてねメッセージを非表示
-          this.hideEmptyMessage();
+            this.fire('added');
+          })
         },
         handleDeleteItem(event, data) {
           let index, item;
@@ -151,6 +158,13 @@
          */
         showEmptyMessage() {
           Polymer.dom(this.$.fileEmptyMessage).classList.remove('hidden');
+        },
+        openFileBrowser() {
+          const selectedFiles = dialog.showOpenDialog({
+            title: 'ファイルを選択',
+            properties: ['openFile', 'openDirectory', 'multiSelections'],
+          });
+          this.addItems(selectedFiles);
         },
         initializeFileItems() {
           this.items = [];
