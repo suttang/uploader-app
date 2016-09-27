@@ -1,0 +1,84 @@
+<dom-module id="box-store">
+  <script>
+    (() => {
+      const store = {};
+      const signals = [];
+
+      Polymer({
+        is: 'box-store',
+        properties: {
+          /**
+           * item key
+           */
+          name: {
+            type: String,
+            value: '',
+          },
+          /**
+           * The data associated with this storage.
+           * If set to null item will be deleted.
+           * @type {*}
+           */
+          value: {
+            type: Object,
+            notify: true,
+            default: f => {return [];},
+          },
+        },
+
+        observers: [
+          '_tryStoreValue(value.*)',
+        ],
+
+        // https://github.com/PolymerElements/iron-signals/blob/master/iron-signals.html
+
+        ready() {
+          if (! store[this.name]) {
+            store[this.name] = {};
+          }
+          this._boundHandleStore = this._handleStore.bind(this);
+        },
+
+        _handleStore(event) {
+          console.log(`!!!!!!!!!! handle store ${this.id}`);
+          if (this.value === store[this.name]) {
+            return;
+          }
+          console.warn(`SET value to ${this.name}`, event.detail);
+
+          this.set('value', event.detail);
+          this.fire('changed', event.detail);
+        },
+
+        attached: function() {
+          signals.push(this);
+          this.addEventListener(`box-store-value-changed-${this.name}`, this._boundHandleStore);
+        },
+
+        detached: function() {
+          const i = signals.indexOf(this);
+          if (i >= 0) {
+            signals.splice(i, 1);
+          }
+          this.removeEventListener(`box-store-value-changed-${this.name}`, this._boundHandleStore);
+        },
+
+        _tryStoreValue(value) {
+          console.log(`change element ${this.id}`);
+
+          store[this.name] = this.value;
+
+          // Dispatch the event.
+          const signal = new CustomEvent(`box-store-value-changed-${this.name}`, {
+            bubbles: false,
+            detail: store[this.name],
+          });
+          console.warn('DISPATCH CHANGE EVENT!');
+          for (let s of signals) {
+            s.dispatchEvent(signal);
+          }
+        },
+      });
+    })();
+  </script>
+</dom-module>

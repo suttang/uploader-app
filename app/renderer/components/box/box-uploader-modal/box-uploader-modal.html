@@ -1,5 +1,6 @@
 <link rel="import" href="../box-modal/box-modal.html">
 <link rel="import" href="../box-button/box-button.html">
+<link rel="import" href="../box-store/box-store.html">
 <link rel="import" href="../../../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../../../bower_components/paper-progress/paper-progress.html">
 
@@ -77,7 +78,7 @@
     </style>
 
     <!-- STORE -->
-    <iron-localstorage name="box:file:items" value="{{files}}" on-iron-localstorage-load-empty="initializeFileItems"></iron-localstorage>
+    <box-store name="box:file:items" value="{{files}}" id="modal-store"></box-store>
     <!-- /STORE -->
 
     <box-modal id="modal" on-cancel="handleModalClose">
@@ -116,7 +117,7 @@
             type: Array,
             value: function() {
               return [];
-            }
+            },
           }
         },
         attached() {
@@ -136,6 +137,7 @@
 
           // Add file entry to archive
           const promises = [];
+
           for (let item of this.files) {
             promises.push(archive.add(item.path));
           }
@@ -179,8 +181,6 @@
         showSetPasswordScreen() {
           Polymer.dom(this.$.sendEmail).classList.remove('show');
           Polymer.dom(this.$.setPassword).classList.add('show');
-          // files を空にする
-          this.splice('files', 0, this.files.length);
         },
         showUploadProgress() {
           Polymer.dom(this.$.setPassword).classList.remove('show');
@@ -208,10 +208,7 @@
         },
         handleModalClose(event) {
           this.fire('close');
-        },
-        initializeFileItems() {
-          this.files = [];
-        },
+        }
       });
     })();
   </script>

@@ -1,5 +1,6 @@
 <link rel="import" href="../box-file-item/box-file-item.html">
 <link rel="import" href="../box-icon/box-icon-arrow-bottom.html">
+<link rel="import" href="../box-store/box-store.html">
 
 <dom-module id="box-file-list">
 
@@ -47,7 +48,7 @@
     </style>
 
     <!-- STORE -->
-    <iron-localstorage name="box:file:items" value="{{items}}" on-iron-localstorage-load-empty="initializeFileItems"></iron-localstorage>
+    <box-store name="box:file:items" value="{{items}}" id="box-file-list-store"></box-store>
     <!-- /STORE -->
 
     <div id="fileEmptyMessage">
@@ -78,7 +79,7 @@
             type: Array,
             value: function() {
               return [];
-            }
+            },
           }
         },
         listeners: {
@@ -87,11 +88,13 @@
         ready() {
           // items を空にする
           this.splice('items', 0, this.items.length);
-          console.log(this.items);
         },
         added() {
           // ドロップしてねメッセージを非表示
           this.hideEmptyMessage();
+        },
+        empty() {
+          this.splice('items', 0, this.items.length);
         },
         showNewArchive() {
           // clear file list
@@ -115,13 +118,17 @@
           this.fire('added');
         },
         addItems(items) {
+          console.log('CALL addItems in box-file-list');
           Promise.all(items.map(filepath => fileStat(filepath))).then(statsList => {
+            console.log('END file stats promises');
             for (let stats of statsList) {
+              console.log(`CHECK file stats [${stats.filename}]`);
               // 同じ名前が既に登録されている場合は追加しない
               const hasAdded = this.items.filter(item => item.path == stats.filepath).length > 0;
               if (hasAdded) {
                 continue;
               }
+              console.log(`PUSH file to item box-file-list - ${this.items.length}`);
               this.push('items', {
                 type: stats.filetype,
                 path: stats.filepath,
@@ -130,7 +137,8 @@
               });
             }
             this.fire('added');
-          })
+            console.groupEnd();
+          });
         },
         handleDeleteItem(event, data) {
           let index, item;
@@ -165,9 +173,6 @@
             properties: ['openFile', 'openDirectory', 'multiSelections'],
           });
           this.addItems(selectedFiles);
-        },
-        initializeFileItems() {
-          this.items = [];
         },
       });
 

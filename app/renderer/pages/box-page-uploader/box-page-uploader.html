@@ -188,6 +188,7 @@
         handleModalCompleted(event) {
           Polymer.dom(this).classList.remove('modalShown');
           this.$.modal.hide();
+          this.$.fileList.empty();
         },
         handleModalClose(event) {
           Polymer.dom(this).classList.remove('modalShown');
