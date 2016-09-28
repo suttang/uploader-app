@@ -15,6 +15,7 @@
       }
 
       select#listContainer {
+        opacity: 0.2;
         width: 100%;
         border: 0px;
         outline: 0px;
@@ -53,6 +54,30 @@
         /*font-weight: 500;*/
         -webkit-appearance: none;
       }
+
+      #itemScrollWrapper {
+        position: relative;
+        width: 100%;
+        height: 80%;
+        overflow-y: scroll;
+        background: rgba(0, 0, 0, 0.1);
+      }
+      #itemList {
+        position: absolute;
+        top: 0px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        pointer-events:none;
+      }
+      #itemList li {
+        margin: 0;
+        padding: 10px 10px;
+        font-size: 14px;
+        font-weight: 200;
+        line-height: 1.25;
+        /*letter-spacing: 1px;*/
+      }
     </style>
 
     <!-- STORE -->
@@ -65,12 +90,19 @@
 
     <div>検索</div>
 
-    <select multiple id="listContainer" on-change="selectChange" tabindex="-1">
-      <option class="item" value="" selected>新規アーカイブ</option>
-      <template is="dom-repeat" items="{{items}}">
-        <option class="item" value="{{item.key}}" id="{{item.key}}" data-name="{{item.name}}" on-contextmenu="openContextMenu">{{item.name}}</option>
-      </template>
-    </select>
+    <div id="itemScrollWrapper">
+      <ul id="itemList" on-click="handleItemListClick">
+        <template is="dom-repeat" items="{{items}}">
+          <li>{{item.name}}</li>
+        </template>
+      </ul>
+      <select multiple id="listContainer" on-change="selectChange" tabindex="-1">
+        <!-- <option class="item" value="" selected>新規アーカイブ</option> -->
+        <template is="dom-repeat" items="{{items}}">
+          <option class="item" value="{{item.key}}" id="{{item.key}}" data-name="{{item.name}}" on-contextmenu="openContextMenu">{{item.name}}</option>
+        </template>
+      </select>
+    </div>
   </template>
 
 
@@ -139,14 +171,16 @@
           });
         },
         refresh(entries) {
-          // empty
+          // Empty
           this.splice('items', 0, this.items.length);
-          // add
+          // Add archived items
           for (let key in entries) {
             let entry = entries[key];
             entry.key = key;
             this.unshift('items', entry);
           }
+          // Add create archive item
+          this.unshift('items', { name: '新規アーカイブ', key: 'newarchive' });
         },
         openContextMenu(event) {
           event.preventDefault();
