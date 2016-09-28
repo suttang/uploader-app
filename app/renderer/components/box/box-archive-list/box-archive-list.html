@@ -162,6 +162,15 @@
         close() {
           this.isOpened = false;
         },
+        /**
+         * アイテムを選択する
+         * @param  {String} key
+         */
+        selectItem(key) {
+          const item = Polymer.dom(this.root).querySelector(`#${key}`);
+          this.$.listContainer.selectedIndex = 1;
+          this.selectChange();
+        },
         selectChange() {
           selectedItems = Polymer.dom(this.root).querySelectorAll('option.item:checked');
           this.fire('select-change', selectedItems);

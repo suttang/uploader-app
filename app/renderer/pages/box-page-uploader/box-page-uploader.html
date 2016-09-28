@@ -84,7 +84,7 @@
       </div>
     </div>
 
-    <box-uploader-modal id="modal" on-complete="handleModalCompleted" on-close="handleModalClose"></box-uploader-modal>
+    <box-uploader-modal id="modal" on-complete="handleModalCompleted" on-close="handleModalClose" on-upload-complete="handleUploadComplete"></box-uploader-modal>
   </template>
 
   <script>
@@ -188,10 +188,13 @@
           Polymer.dom(this).classList.add('modalShown');
           this.$.modal.show();
         },
+        handleUploadComplete(event, data) {
+          const key = data.key;
+          this.$.uploadedList.selectItem(key);
+        },
         handleModalCompleted(event) {
           Polymer.dom(this).classList.remove('modalShown');
           this.$.modal.hide();
-          this.$.fileList.empty();
         },
         handleModalClose(event) {
           Polymer.dom(this).classList.remove('modalShown');

@@ -171,6 +171,7 @@
           // Archive upload complete
           .then(response => {
             console.log("FILE UPLOAD COMPLETE");
+            this.fire('upload-complete', { key: response.key });
             setTimeout(() => {
               this.showSendEmail();
             }, 500);
