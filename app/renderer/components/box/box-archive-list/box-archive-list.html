@@ -145,7 +145,7 @@
           for (let key in entries) {
             let entry = entries[key];
             entry.key = key;
-            this.push('items', entry);
+            this.unshift('items', entry);
           }
         },
         openContextMenu(event) {
