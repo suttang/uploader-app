@@ -40,11 +40,11 @@
         },
 
         _handleStore(event) {
-          console.log(`!!!!!!!!!! handle store ${this.id}`);
+          // console.log(`!!!!!!!!!! handle store ${this.id}`);
           if (this.value === store[this.name]) {
             return;
           }
-          console.warn(`SET value to ${this.name}`, event.detail);
+          // console.warn(`SET value to ${this.name}`, event.detail);
 
           this.set('value', event.detail);
           this.fire('changed', event.detail);
@@ -64,7 +64,7 @@
         },
 
         _tryStoreValue(value) {
-          console.log(`change element ${this.id}`);
+          // console.log(`change element ${this.id}`);
 
           store[this.name] = this.value;
 
@@ -73,7 +73,7 @@
             bubbles: false,
             detail: store[this.name],
           });
-          console.warn('DISPATCH CHANGE EVENT!');
+          // console.warn('DISPATCH CHANGE EVENT!');
           for (let s of signals) {
             s.dispatchEvent(signal);
           }
