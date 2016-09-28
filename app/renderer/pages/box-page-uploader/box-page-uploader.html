@@ -100,7 +100,10 @@
           drop: 'handleDrop',
         },
         properties: {
-          mode: String,
+          mode: {
+            type: String,
+            value: MODE_CREATE,
+          }
         },
         handleDragEnter(event) {
           event.preventDefault();
