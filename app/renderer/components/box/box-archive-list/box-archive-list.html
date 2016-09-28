@@ -14,52 +14,11 @@
         -webkit-app-region: drag;
       }
 
-      select#listContainer {
-        opacity: 0;
-        width: 100%;
-        border: 0px;
-        outline: 0px;
-        background: transparent;
-        overflow: visible;
-        color: #767D82;
-        -webkit-appearance: none;
-      }
-
-      #agemaru:checked {
-        color: #f00;
-      }
-      select#listContainer option {
-        width: 100%;
-        padding: 10px 10px;
-        font-size: 14px;
-        font-weight: 200;
-        appearance: none;
-        -webkit-appearance: none;
-      }
-      select#listContainer option.selected {
-        color: #767D82;
-      }
-      /*
-        http://jsfiddle.net/vzDvK/1/
-      */
-      select#listContainer[multiple]:focus option:checked {
-        color: #767D82;
-        background: white linear-gradient(0deg, white 0%, white 100%);
-        /*font-weight: 500;*/
-        -webkit-appearance: none;
-      }
-      select#listContainer[multiple] option:checked {
-        color: #767D82;
-        background: white linear-gradient(0deg, white 0%, white 100%);
-        /*font-weight: 500;*/
-        -webkit-appearance: none;
-      }
-
       #itemScrollWrapper {
         position: relative;
         width: 100%;
         height: calc(100% - 39px);/* 39px is height of #draggableArea */
-        overflow-y: scroll;
+        overflow: scroll;
       }
       #itemList {
         position: absolute;
@@ -69,6 +28,7 @@
         padding: 0;
         list-style: none;
         pointer-events:none;
+        z-index: 100;
       }
       #itemList li {
         margin: 0;
@@ -81,6 +41,26 @@
       #itemList li.selected {
         background: #fff;
         font-weight: 500;
+      }
+      #listContainer {
+        opacity: 0;
+        position: absolute;
+        top: -2px;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border: 0px;
+        outline: 0px;
+        overflow: visible;
+        -webkit-appearance: none;
+      }
+      #listContainer option {
+        width: 100%;
+        padding: 10px 0px;
+        font-size: 14px;
+        font-weight: 200;
+        appearance: none;
+        -webkit-appearance: none;
       }
     </style>
 
@@ -101,7 +81,6 @@
         </template>
       </ul>
       <select multiple id="listContainer" on-change="selectChange" tabindex="-1">
-        <!-- <option class="item" value="" selected>新規アーカイブ</option> -->
         <template is="dom-repeat" items="{{items}}">
           <option class="item" value="{{item.key}}" id="{{item.key}}" data-name="{{item.name}}" on-contextmenu="openContextMenu">{{item.name}}</option>
         </template>
@@ -109,10 +88,8 @@
     </div>
   </template>
 
-
   <script>
     (() => {
-      // <li class="item" on-click="itemClicked" on-contextmenu="openContextMenu" id="{{item.key}}" data-name="{{item.name}}">{{item.name}}</li>
       const electron = require('electron');
       const Menu = electron.remote.Menu;
       const menu = Menu.buildFromTemplate([
