@@ -209,14 +209,13 @@
             let listItem = Polymer.dom(this.root).querySelector(`#item-${item.id}`);
             listItem.classList.add('selected');
             // スクロール位置調整
-            // TODO: ちゃんと作る
+            // TODO:0 ちゃんと作る
             let boundingRect = listItem.getBoundingClientRect();
             // 上に行く場合
             if (boundingRect.top - 39 < 0) {
               this.$.itemScrollWrapper.scrollTop += (boundingRect.top - 39);
             }
             // 下に行く場合
-            console.log(boundingRect.bottom);
             if (this.clientHeight < boundingRect.bottom) {
               this.$.itemScrollWrapper.scrollTop += boundingRect.bottom - this.clientHeight;
             }
