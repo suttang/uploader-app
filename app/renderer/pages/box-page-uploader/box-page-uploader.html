@@ -199,7 +199,13 @@
         handleModalClose(event) {
           Polymer.dom(this).classList.remove('modalShown');
           this.$.modal.hide();
-        }
+        },
+        // attached() {
+        //   this.handleUploadPressed();
+        //   setTimeout(() => {
+        //     this.$.modal.showSendEmail();
+        //   }, 100);
+        // }
       });
     })();
   </script>
