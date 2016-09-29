@@ -51,9 +51,11 @@
          --paper-progress-transition-duration: 200ms;
          --paper-progress-active-color: #5386DD;
       }
+      .modalWrapper {
+        padding: 50px 60px;
+      }
       .contents {
         display: none;
-        padding: 50px 60px;
       }
       .contents.show {
         display: block;
@@ -61,12 +63,12 @@
       .contents.hidden {
         display: none;
       }
-      .contents h1 {
+      h1 {
+        margin: 0 0 20px 0;
+        padding: 0;
         font-size: 24px;
         font-weight: 200;
         color: #fff;
-        margin: 0;
-        padding: 0;
       }
       .contents h2 {
         margin: 0;
@@ -83,6 +85,9 @@
         font-weight: 500;
         line-height: 1;
         color: #fff;
+      }
+      p.input {
+        margin: 0 0 10px 0;
       }
       :host-context(box-uploader-modal) {
         background: #fff !important;
@@ -110,7 +115,10 @@
       paper-progress {
         width: 100%;
       }
-
+      .primaryButton {
+        margin-top: 20px;
+        text-align: center;
+      }
     </style>
 
     <!-- STORE -->
@@ -118,39 +126,46 @@
     <!-- /STORE -->
 
     <box-modal id="modal" on-cancel="handleModalClose">
-      <div id="setPassword" class="contents">
+      <div class="modalWrapper">
         <h1>Create new archive</h1>
-        <p><paper-input label="Download password"></paper-input></p>
-        <p><paper-input label="Archive password"></paper-input></p>
-        <box-button type="primary" icon="box-icon-upload" on-click="handleUploadPressed">Upload</box-button>
-      </div>
-      <div id="uploadProgress" class="contents">
-        <h1>Create new archive</h1>
-        <p>uploading</p>
-        <paper-progress class="transiting"></paper-progress>
-      </div>
-      <div id="sendEmail" class="contents">
-        <h1>Create new archive</h1>
-        <div class="column">
-          <div class="columnInfo">
-            <h2>Download URL</h2>
-            <p>http://example.com/dUdytE875L</p>
-            <div class="column columnPasswordContainer">
-              <div class="columnDownloadPassword">
-                <h2>Download password</h2>
-                <p>HdyTke37oH76h</p>
-              </div>
-              <div class="columnZipPassword">
-                <h2>ZIP password</h2>
-                <p>JUYd2LeH4KldW</p>
-              </div>
-            </div>
-          </div>
-          <div class="columnSendEmail">
-            <box-button type="primary" on-click="handleSendEmailPressed">SEND EMAIL</box-button>
+        <!-- setPassword -->
+        <div id="setPassword" class="contents">
+          <p class="input"><paper-input label="Download password"></paper-input></p>
+          <p class="input"><paper-input label="Archive password"></paper-input></p>
+          <div class="primaryButton">
+            <box-button type="primary" icon="box-icon-upload" on-click="handleUploadPressed">Upload</box-button>
           </div>
         </div>
-        <box-button type="primary" on-click="handleOkPressed">OK</box-button>
+        <!-- uploadProgress -->
+        <div id="uploadProgress" class="contents">
+          <p>uploading</p>
+          <paper-progress class="transiting"></paper-progress>
+        </div>
+        <!-- sendEmail -->
+        <div id="sendEmail" class="contents">
+          <div class="column">
+            <div class="columnInfo">
+              <h2>Download URL</h2>
+              <p>http://example.com/dUdytE875L</p>
+              <div class="column columnPasswordContainer">
+                <div class="columnDownloadPassword">
+                  <h2>Download password</h2>
+                  <p>HdyTke37oH76h</p>
+                </div>
+                <div class="columnZipPassword">
+                  <h2>ZIP password</h2>
+                  <p>JUYd2LeH4KldW</p>
+                </div>
+              </div>
+            </div>
+            <div class="columnSendEmail">
+              <box-button type="primary" on-click="handleSendEmailPressed">SEND EMAIL</box-button>
+            </div>
+          </div>
+          <div class="primaryButton">
+            <box-button type="primary" on-click="handleOkPressed">OK</box-button>
+          </div>
+        </div>
       </div>
     </box-modal>
 
@@ -284,7 +299,7 @@
           ].join("%0D%0A");
           setTimeout(() => {
             location.href = `mailto:?subject=${subject1}&body=${body1}`;
-          }, 100);
+          }, 200);
           setTimeout(() => {
             location.href = `mailto:?subject=${subject2}&body=${body2}`;
           }, 1);
