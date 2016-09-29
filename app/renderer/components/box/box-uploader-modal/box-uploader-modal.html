@@ -68,8 +68,44 @@
         margin: 0;
         padding: 0;
       }
+      .contents h2 {
+        margin: 0;
+        padding: 0;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1;
+        color: #858D93;
+      }
+      .contents h2 + p {
+        margin: 0;
+        padding: 0;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1;
+        color: #fff;
+      }
       :host-context(box-uploader-modal) {
         background: #fff !important;
+      }
+
+      #sendEmail .column {
+        display: flex;
+      }
+      #sendEmail > .column .columnInfo {
+        flex-grow: 1;
+      }
+      #sendEmail > .column .columnSendEmail {
+        flex-grow: 1;
+        align-self: center;
+      }
+      #sendEmail .columnDownloadPassword {
+        flex-grow: 1;
+      }
+      #sendEmail .columnZipPassword {
+        flex-grow: 1;
+      }
+      #sendEmail .columnPasswordContainer {
+        margin-top: 20px;
       }
       paper-progress {
         width: 100%;
@@ -95,10 +131,25 @@
       </div>
       <div id="sendEmail" class="contents">
         <h1>Create new archive</h1>
-        <div>
-          <p>Download URL</p>
+        <div class="column">
+          <div class="columnInfo">
+            <h2>Download URL</h2>
+            <p>http://example.com/dUdytE875L</p>
+            <div class="column columnPasswordContainer">
+              <div class="columnDownloadPassword">
+                <h2>Download password</h2>
+                <p>HdyTke37oH76h</p>
+              </div>
+              <div class="columnZipPassword">
+                <h2>ZIP password</h2>
+                <p>JUYd2LeH4KldW</p>
+              </div>
+            </div>
+          </div>
+          <div class="columnSendEmail">
+            <box-button type="primary" on-click="handleSendEmailPressed">SEND EMAIL</box-button>
+          </div>
         </div>
-        koreha oisii
         <box-button type="primary" on-click="handleOkPressed">OK</box-button>
       </div>
     </box-modal>
@@ -180,14 +231,17 @@
           });
         },
         showSetPasswordScreen() {
-          Polymer.dom(this.$.sendEmail).classList.remove('show');
           Polymer.dom(this.$.setPassword).classList.add('show');
+          Polymer.dom(this.$.uploadProgress).classList.remove('show');
+          Polymer.dom(this.$.sendEmail).classList.remove('show');
         },
         showUploadProgress() {
           Polymer.dom(this.$.setPassword).classList.remove('show');
           Polymer.dom(this.$.uploadProgress).classList.add('show');
+          Polymer.dom(this.$.sendEmail).classList.remove('show');
         },
         showSendEmail() {
+          Polymer.dom(this.$.setPassword).classList.remove('show');
           Polymer.dom(this.$.uploadProgress).classList.remove('show');
           Polymer.dom(this.$.sendEmail).classList.add('show');
           // プログレスバーをゼロに
@@ -209,6 +263,31 @@
         },
         handleModalClose(event) {
           this.fire('close');
+        },
+        handleSendEmailPressed(event) {
+          const subject1 = 'ファイルをお送りします';
+          const body1 = [
+            '様',
+            '御世話になっております。',
+            'ファイルはコレです',
+            'http://example.com/dUdytE875L',
+            'パスワードは後送します。'
+          ].join("%0D%0A");
+          const subject2 = 'This is mail 2 subject';
+          const body2 = [
+            '先程のパスワードです',
+            'Download password',
+            'HdyTke37oH76h',
+            '',
+            'ZIP password',
+            'JUYd2LeH4KldW',
+          ].join("%0D%0A");
+          setTimeout(() => {
+            location.href = `mailto:?subject=${subject1}&body=${body1}`;
+          }, 100);
+          setTimeout(() => {
+            location.href = `mailto:?subject=${subject2}&body=${body2}`;
+          }, 1);
         }
       });
     })();
