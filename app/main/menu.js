@@ -35,18 +35,60 @@ const menuContentEdit = {
 const menuContentView = {
   label: 'View',
   submenu: [
+    { role: 'togglefullscreen' },
     {
-      label: 'Reload',
-      accelerator: 'CmdOrCtrl+R',
-      click (item, focusedWindow) {
-
-      }
-    },
+      label: 'Developer',
+      submenu: [
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+          click(item, focusedWindow) {
+            if (focusedWindow) {
+              focusedWindow.webContents.toggleDevTools();
+            }
+          }
+        },
+        {
+          label: 'Reload',
+          accelerator: 'CmdOrCtrl+R',
+          click (item, focusedWindow) {
+            if (focusedWindow) {
+              focusedWindow.rpc.emit('reload');
+            }
+          }
+        },
+      ]
+    }
   ]
 };
 
+const menuContentWindow = {
+  role: 'window',
+  submenu: [
+    { role: 'minimize' },
+    { type: 'separator' },
+    { role: 'zoom' },
+    { type: 'separator' },
+    { role: 'front' }
+  ]
+};
+
+const menuContentHelp = {
+  role: 'help',
+  submenu: [
+    {
+      label: `${appName} Website`,
+      click() {
+        shell.openExternal('https://hyperterm.now.sh');
+      }
+    },
+  ]
+}
+
 menu.push(menuContentEdit);
 menu.push(menuContentView);
+menu.push(menuContentWindow);
+menu.push(menuContentHelp);
 if (process.platform === 'darwin') {
   menu.unshift(menuContentApp);
 }
