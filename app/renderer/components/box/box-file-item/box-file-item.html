@@ -59,6 +59,10 @@
         align-items: center;
         width: 32px;
         height: 55px;
+        display: none;
+      }
+      :host(.active) .file-item .delete {
+        display: block;
       }
       :host {
         --box-icon-svg: {
@@ -114,9 +118,19 @@
           size: String,
           path: String,
         },
+        listeners: {
+          mouseenter: '_handleMouseEnter',
+          mouseleave: '_handleMouseLeave',
+        },
         attached() {
           this.icon = `../assets/images/icons/${findIcon(this.name)}`;
           this.size = filesize(this.size);
+        },
+        _handleMouseEnter() {
+          Polymer.dom(this).classList.add('active');
+        },
+        _handleMouseLeave() {
+          Polymer.dom(this).classList.remove('active');
         },
         handleDelete() {
           this.fire('delete', { name: this.name });
