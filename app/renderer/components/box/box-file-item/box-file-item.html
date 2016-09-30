@@ -1,3 +1,5 @@
+<link rel="import" href="../box-icon/box-icon-trash.html">
+
 <dom-module id="box-file-item">
 
   <template>
@@ -22,7 +24,6 @@
         width: 100%;
         height: 55px;
         padding: 0px 10px;
-        /*line-height: 55px;*/
         text-overflow: ellipsis;
         overflow: hidden;
       }
@@ -54,14 +55,28 @@
         white-space: nowrap;
       }
       .file-item .delete {
+        position: relative;
+        align-items: center;
+        width: 32px;
         height: 55px;
       }
-      .file-item .delete img {
-        object-fit: contain;
-        width: calc(55px / 2);
-        height: calc(55px / 2);
-        margin-top: calc((55px - (55px / 2)) / 2 - 2px);
-        opacity: 0.25;
+      :host {
+        --box-icon-svg: {
+          width: 100%;
+          height: 100%;
+          min-width: 100%;
+          min-height: 100%;
+        }
+      }
+      .file-item .delete box-icon-trash {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        width: 22px;
+        height: 55px;
+        display: inline-block;
       }
       .file-item .delete img:hover {
         opacity: 0.5;
@@ -78,7 +93,8 @@
         <div class="filepath">{{path}}</div>
       </div>
       <div class="delete" on-click="handleDelete">
-        <img src="../../../../assets/images/icon-delete.png">
+        <box-icon-trash></box-icon-trash>
+        <!-- <img src="../../../../assets/images/icon-delete.png"> -->
       </div>
     </div>
   </template>
