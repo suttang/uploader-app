@@ -107,10 +107,12 @@
         <div class="filename">{{name}}</div>
         <div class="filepath">{{path}}</div>
       </div>
-      <div class="delete" on-click="handleDelete">
-        <box-icon-trash></box-icon-trash>
-        <!-- <img src="../../../../assets/images/icon-delete.png"> -->
-      </div>
+      <template is="dom-if" if="{{!archived}}">
+        <div class="delete" on-click="handleDelete">
+          <box-icon-trash></box-icon-trash>
+          <!-- <img src="../../../../assets/images/icon-delete.png"> -->
+        </div>
+      </template>
     </div>
   </template>
 
@@ -128,6 +130,10 @@
           name: String,
           size: String,
           path: String,
+          archived: {
+            type: Boolean,
+            value: false,
+          }
         },
         listeners: {
           mouseenter: '_handleMouseEnter',

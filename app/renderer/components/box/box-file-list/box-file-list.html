@@ -59,7 +59,7 @@
 
     <div class="file-list">
       <template is="dom-repeat" items="{{items}}">
-        <box-file-item name="{{item.name}}" size="{{item.size}}" path="{{item.path}}" on-delete="handleDeleteItem" order="{{index}}"></box-file-item>
+        <box-file-item name="{{item.name}}" size="{{item.size}}" path="{{item.path}}" archived="{{item.archived}}" on-delete="handleDeleteItem" order="{{index}}"></box-file-item>
       </template>
       <content></content>
     </div>
@@ -113,6 +113,7 @@
               path: item.path,
               name: item.name,
               size: item.size,
+              archived: true,
             });
           }
           this.fire('added');
