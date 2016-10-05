@@ -82,7 +82,7 @@
       </ul>
       <select multiple id="listContainer" on-change="selectChange" tabindex="-1">
         <template is="dom-repeat" items="{{items}}">
-          <option class="item" value="{{item.key}}" id="{{item.key}}" data-name="{{item.name}}" on-contextmenu="openContextMenu">{{item.name}}</option>
+          <option class="item" value="{{item.key}}" id="{{item.key}}" data-name="{{item.name}}" on-contextmenu="openContextMenu" selected$="{{item.selected}}">{{item.name}}</option>
         </template>
       </select>
     </div>
@@ -150,6 +150,7 @@
           uploadsRef.on('value', snapshot => {
             this.refresh(snapshot.val());
           });
+          this.selectItem('newarchive');
         },
         refresh(entries) {
           // Empty
@@ -161,7 +162,7 @@
             this.unshift('items', entry);
           }
           // Add create archive item
-          this.unshift('items', { name: '新規アーカイブ', key: 'newarchive' });
+          this.unshift('items', { name: '新規アーカイブ', key: 'newarchive', selected: 'selected' });
         },
         openContextMenu(event) {
           event.preventDefault();
@@ -183,18 +184,14 @@
          */
         selectItem(key) {
           const item = Polymer.dom(this.root).querySelector(`#${key}`);
-          this.$.listContainer.selectedIndex = 1;
+          let index = 0;
+          for (index = 0; index < this.$.listContainer.children.length; index++) {
+            if (item === this.$.listContainer.children[index]) {
+              break;
+            }
+          }
+          this.$.listContainer.selectedIndex = index;
           this.selectChange();
-          // const item = Polymer.dom(this.root).querySelector(`#${key}`);
-          // let index = 0;
-          // for (index = 0; index < this.$.listContainer.children.length; index++) {
-          //   if (item === this.$.listContainer.children[index]) {
-          //     break;
-          //   }
-          // }
-          // console.log(index);
-          // this.$.listContainer.selectedIndex = index;
-          // this.selectChange();
         },
         selectChange() {
           // selectedItems = Polymer.dom(this.root).querySelectorAll('option.item:checked');
