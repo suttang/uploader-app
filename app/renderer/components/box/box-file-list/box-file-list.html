@@ -95,12 +95,14 @@
         },
         empty() {
           this.splice('items', 0, this.items.length);
+          this.fire('item-changed', this.items);
         },
         showNewArchive() {
           // clear file list
           this.splice('items', 0, this.items.length);
           // ドロップしてねメッセージを表示
           this.showEmptyMessage();
+          this.fire('item-changed', this.items);
         },
         showArchiveItem(archiveItem) {
           // clear file list
@@ -117,6 +119,7 @@
             });
           }
           this.fire('added');
+          this.fire('item-changed', this.items);
         },
         addItems(items) {
           console.log('CALL addItems in box-file-list');
@@ -138,6 +141,7 @@
               });
             }
             this.fire('added');
+            this.fire('item-changed', this.items);
             console.groupEnd();
           });
         },
@@ -155,6 +159,7 @@
           if (this.items.length <= 0) {
             this.showEmptyMessage();
           }
+          this.fire('item-changed', this.items);
         },
         /**
          * Hide empty message

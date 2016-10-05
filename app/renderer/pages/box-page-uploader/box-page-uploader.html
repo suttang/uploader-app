@@ -79,7 +79,7 @@
     <div id="column">
       <box-archive-list id="uploadedList" on-select-change="uploadedSelectChanged"></box-archive-list>
       <div id="rightColumn">
-        <box-file-list id="fileList"></box-file-list>
+        <box-file-list id="fileList" on-item-changed="handleFileListItemChanged"></box-file-list>
         <box-button type="primary" id="uploadButton" icon="box-icon-upload" on-click="handleUploadPressed">Upload</box-button>
       </div>
     </div>
@@ -119,7 +119,6 @@
           if (this.mode !== MODE_CREATE) {
             return;
           }
-          this.showUploadButton();
           const files = [];
           for (let item of event.dataTransfer.files) {
             files.push(item.path);
@@ -164,7 +163,6 @@
             return;
           }
           this.mode = MODE_HISTORY;
-          this.hideUploadButton();
 
           // それ以外 (アップロード済みアイテムの選択) の場合
           const archiveItem = this.$.uploadedList.getArchiveItemById(item.id);
@@ -199,6 +197,20 @@
         handleModalClose(event) {
           Polymer.dom(this).classList.remove('modalShown');
           this.$.modal.hide();
+        },
+        handleFileListItemChanged(event, items) {
+          switch (this.mode) {
+            case MODE_CREATE:
+              if (items.length > 0) {
+                this.showUploadButton();
+              } else {
+                this.hideUploadButton();
+              }
+              break;
+            case MODE_HISTORY:
+              this.hideUploadButton();
+              break;
+          }
         },
         // attached() {
         //   this.handleUploadPressed();
